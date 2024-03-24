@@ -1,3 +1,7 @@
+-- This file contains all past, future, and general/template SQL queries we will use in our project.
+-- To see ONLY queries that HAVE BEEN RUN (table creation, insertion, etc), please see the all-run-sql-commands-m2.sql file
+
+
 -- TABLE CREATION SQL--
 CREATE TABLE IF NOT EXISTS AF_Password (
     pass_id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
@@ -120,6 +124,9 @@ INSERT INTO AF_CustomerPrice (attraction_id, customer_type, amount) VALUES (21, 
 INSERT INTO AF_Attraction_Has_Type (attraction_type_id, attraction_id) VALUES (14, 21), (12, 22), (11, 23),(14, 24), (15, 24), (15, 25);
 INSERT INTO AF_AttractionPhone (phone, label, attraction_id) VALUES ('605-574-2523', 'General', 21), ('434-977-1234', 'General', 22), ('855-433-4210', 'General', 25);
 
+INSERT INTO AF_Favorite (user_id, attraction_id) VALUES (1, 10), (1, 25), (1,17), (1,20), (1,22), (2,8), (2,9), (2, 10), (2, 12), (2,25), (3,14), (3,23), (3,24), (3,11);
+INSERT INTO AF_Rating (user_id, attraction_id, rating_value) VALUES (1, 10, 5), (1,17, 5), (1, 22, 5), (2, 8, 5), (1,19, 1), (1,12, 2), (2, 12, 5), (2,15, 3), (3,14, 5), (2,14,2), (3,24,4), (3,11,5);
+
 -- SELECT EVERYTHING IN EACH TABLE
 SELECT * FROM AF_Attraction;
 SELECT * FROM AF_Attraction_Has_Type;
@@ -163,14 +170,14 @@ SELECT COUNT(*) FROM AF_Rating;
 DESC AF_Location;
 SELECT COUNT(*) FROM AF_Location;
 
---BASIC COMMANDS FOR ADDING/UPDATING/DELETING--
+--GENERAL BASIC COMMANDS FOR ADDING/UPDATING/DELETING--
 
 --ADDING--
 INSERT INTO AF_Password (pass_hash) VALUES ('hashed_password_here');
 
 INSERT INTO AF_Location (street_address, city, state, zip_code) VALUES ('123 Main St', 'City Name', 'State Name', '12345');
 
-INSERT INTO AF_Attraction (attraction_name, street_address, city) VALUES ('Attraction Name', '123 Main St', 'City Name');
+INSERT INTO AF_Attraction (attraction_name, street_address, city, creator_id) VALUES ('Attraction Name', '123 Main St', 'City Name', user_id_here);
 
 INSERT INTO AF_Favorite (user_id, attraction_id) VALUES (user_id_here, attraction_id_here);
 
