@@ -6,10 +6,10 @@ My database login credentials are here for us all to access the same database --
 ////////////////////////////////////////////
 /** S24, PHP (on Google Standard App Engine) connect to MySQL instance (GCP) **/
 // $username = 'root';                       // or your username
-// $password = 'Wahoowa';     
-// $host = 'attraction-finder-cs4750:us-east4:attraction-finder-db';       // e.g., 'cs4750:us-east4:db-demo'; 
+// $password = 'password';     
+// $host = 'host';       // e.g., 'cs4750:us-east4:db-demo'; 
 // $dbname = 'guestbook';           // e.g., 'guestbook';
-// $dsn = "mysql:unix_socket=/cloudsql/attraction-finder-cs4750:us-east4:attraction-finder-db;dbname=guestbook";
+// $dsn = "mysql:unix_socket=/cloudsql/host=$host/dbname=$dbname";
 
 //       e.g., "mysql:unix_socket=/cloudsql/cs4750:us-east4:db-demo;dbname=guestbook";
 
@@ -18,10 +18,10 @@ My database login credentials are here for us all to access the same database --
 
 /** S24, PHP (on local XAMPP or CS server) connect to MySQL instance (GCP) **/
 // $username = 'root';
-// $password = 'Wahoowa';
-// $host = 'attraction-finder-cs4750:us-east4:attraction-finder-db';       // e.g., 'cs4750:us-east4:db-demo'; 
+// $password = 'password';
+// $host = 'host';       // e.g., 'cs4750:us-east4:db-demo'; 
 // $dbname = 'attraction-finder';           // e.g., 'guestbook';
-// $dsn = "mysql:host=34.86.17.78;dbname=attraction-finder";   // connect PHP (XAMPP) to DB (GCP)
+// $dsn = "mysql:host=;dbname=";   // connect PHP (XAMPP) to DB (GCP)
       // e.g., "mysql:host=99.99.999.99;dbname=$dbname";   
 
 // to get public IP addres of the SQL instance, go to GCP SQL overview page
@@ -43,10 +43,10 @@ My database login credentials are here for us all to access the same database --
 
 /** S24, PHP (on GCP, local XAMPP, or CS server) connect to MySQL (on CS server) **/
 // THIS IS YOUR PERSONAL ONE 
-$username = 'mah7ks'; 
-$password = 'Wahoowa';
+$username = 'computingid'; 
+$password = 'password';
 $host = 'mysql01.cs.virginia.edu';
-$dbname = 'mah7ks';
+$dbname = 'computingid';
 $dsn = "mysql:host=$host;dbname=$dbname";
 
 ////////////////////////////////////////////
