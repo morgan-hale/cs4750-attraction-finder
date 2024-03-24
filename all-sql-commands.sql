@@ -1,6 +1,11 @@
 -- This file contains all past, future, and general/template SQL queries we will use in our project.
 -- To see ONLY queries that HAVE BEEN RUN (table creation, insertion, etc), please see the all-run-sql-commands-m2.sql file
 
+-- Granting database access to teammates 
+GRANT ALL ON mah7ks.* TO 'hip7bmg'@'%';
+GRANT ALL ON mah7ks.* TO 'lch4et'@'%';
+GRANT ALL ON mah7ks.* TO 'ncd6fc'@'%';
+
 
 -- TABLE CREATION SQL--
 CREATE TABLE IF NOT EXISTS AF_Password (
@@ -122,6 +127,10 @@ INSERT INTO AF_Attraction_Has_Type (attraction_type_id, attraction_id) VALUES (4
 INSERT INTO AF_AttractionPhone (phone, label, attraction_id) VALUES ('605-574-2523', 'General', 21), ('434-977-1234', 'General', 22), ('855-433-4210', 'General', 25);
 INSERT INTO AF_Favorite (user_id, attraction_id) VALUES (1, 10), (1, 25), (1,17), (1,20), (1,22), (2,8), (2,9), (2, 10), (2, 12), (2,25), (3,14), (3,23), (3,24), (3,11);
 INSERT INTO AF_Rating (user_id, attraction_id, rating_value) VALUES (1, 10, 5), (1,17, 5), (1, 22, 5), (2, 8, 5), (1,19, 1), (1,12, 2), (2, 12, 5), (2,15, 3), (3,14, 5), (2,14,2), (3,24,4), (3,11,5);
+INSERT INTO AF_AttractionType (attraction_type_name) VALUES ('Historical Attraction');
+INSERT INTO AF_Attraction_Has_Type (attraction_type_id, attraction_id) VALUES (6, 13), (6,16), (6,17), (6,18), (6,21), (6,22), (6,24), (6,25);
+
+
 
 -- SELECT EVERYTHING IN EACH TABLE
 SELECT * FROM AF_Attraction;
