@@ -1,3 +1,5 @@
+<!-- this is from potd5. use as a reference for our project -->
+
 <?php session_start(); ?>
 
 <header>  

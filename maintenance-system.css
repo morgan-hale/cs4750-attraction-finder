@@ -1,3 +1,5 @@
+/* This is from potd 5. use as a reference to format pages for our project */
+
 .disabled { background-color: lightgray; color:silver; border-radius: 4px; padding: 4px 10px 4px 10px; }
 .enabled { background-color: black; color:white; border-radius: 4px; padding: 4px 10px 4px 10px; }
 

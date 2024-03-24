@@ -1,3 +1,6 @@
+<!-- This is from potd5 but works for our project too. 
+My database login credentials are here for us all to access the same database -->
+
 <?php
 // Remember to start the database server (or GCP SQL instance) before trying to connect to it
 ////////////////////////////////////////////

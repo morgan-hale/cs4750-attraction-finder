@@ -1,4 +1,6 @@
-<!-- this is from potd5. use it as a reference to build display pages for our project. -->
+<!-- this is a copy of the request.php file from potd5.
+it will be the main landing page for our site. we need to convert it to 
+display data for our project.  -->
 
 <?php
 require("connect-db.php"); // connects to database

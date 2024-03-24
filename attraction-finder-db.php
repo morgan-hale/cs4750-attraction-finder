@@ -1,53 +1,13 @@
-<!-- this is from potd5. use it as a reference to interface with tables for our project. -->
-
+<!-- this is a copy of request-db.php from the potd. 
+in the process of converting the functions to interface with our project's tables instead -->
 
 <?php
-function addRequests($reqDate, $roomNumber, $reqBy, $repairDesc, $reqPriority)
-{
-    global $db;  // this is same as global database saved in connect-db file 
 
-
-    $reqDate = date('Y-m-d'); // ensure proper data type before inserting it into a db 
-
-    // $query = "INSERT INTO requests(reqDate, roomNumber, reqBy, repairDesc, reqPriority) VALUES ('2024-03-18', 'ABC', 'Someone', 'fix light', 'low')";
-    // bc PK auto increments, don't need to include it here
-
-    $query = "INSERT INTO requests(reqDate, roomNumber, reqBy, repairDesc, reqPriority) VALUES (:reqDate, :roomNumber, :reqBy, :repairDesc, :reqPriority)";
-    // ^ this is a PREPARED STATEMENT and is much better security bc input must follow a tempalte 
-
-    try{
-        // $statement = $db ->query($query); // this query function compiles and executes your query right away. updates to table in database
-
-        // when he have dynmaic input, we need prepared statement --> pre-compile the query --> fill in value --> execute. see below:
-        // prepared statement. precompiles 
-        $statement = $db->prepare($query);
-
-        // fill in the value 
-        $statement->bindValue(':reqDate', $reqDate);
-        $statement->bindValue(':roomNumber', $roomNumber);
-        $statement->bindValue(':reqBy', $reqBy);
-        $statement->bindValue(':repairDesc', $repairDesc);
-        $statement->bindValue(':reqPriority', $reqPriority);
-
-        // execute 
-        $statement->execute(); // if you don't call execute then it won't run anything
-        $statement->closeCursor(); // release the Cursor you you don't keep using the instance over and over?     
-    } catch (PDOException $e)
-    {
-        $e->getMessage();
-    } catch (Exception $e)
-    {
-        $e->getMessage();
-    }
-
-   
-}
-
-function getAllRequests()
+function getAllAttractions()
 {
     global $db; // don't keep making new database instance. keep using this global variable! 
 
-    $query = "SELECT * FROM requests";
+    $query = "SELECT * FROM AF_Attraction NATURAL JOIN AF_Location";
     $statement = $db->prepare($query); // just compiles. we don't need to pass in values so just execute! 
     $statement->execute(); 
     $result = $statement->fetchAll(); // fetches all rows in result. just fetch() returns first row. we need to save it to a variable, we'll call it result
