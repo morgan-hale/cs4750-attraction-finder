@@ -1,10 +1,11 @@
 -- This file contains all past, future, and general/template SQL queries we will use in our project.
 -- To see ONLY queries that HAVE BEEN RUN (table creation, insertion, etc), please see the all-run-sql-commands-m2.sql file
 
--- Granting database access to teammates 
-GRANT ALL ON mah7ks.* TO 'hip7bmg'@'%';
-GRANT ALL ON mah7ks.* TO 'lch4et'@'%';
-GRANT ALL ON mah7ks.* TO 'ncd6fc'@'%';
+-- Granting database access to teammates  
+-- from the mah7ks_a database: 
+GRANT ALL ON * TO 'hip7bmg'@'%';
+GRANT ALL ON * TO 'lch4et'@'%';
+GRANT ALL ON * TO 'ncd6fc'@'%';
 
 
 -- TABLE CREATION SQL--

@@ -1,10 +1,11 @@
 -- This file contains all the SQL commands that have been run against our database for Milestone 2. 
 -- It is a subset of the all-sql-commands.sql file which contains both used and future sql commands.
 
--- Granting database access to teammates 
-GRANT ALL ON mah7ks.* TO 'hip7bmg'@'%';
-GRANT ALL ON mah7ks.* TO 'lch4et'@'%';
-GRANT ALL ON mah7ks.* TO 'ncd6fc'@'%';
+-- Granting database access to teammates  
+-- from the mah7ks_a database: 
+GRANT ALL ON * TO 'hip7bmg'@'%';
+GRANT ALL ON * TO 'lch4et'@'%';
+GRANT ALL ON * TO 'ncd6fc'@'%';
 
 
 -- TABLE CREATION SQL--
