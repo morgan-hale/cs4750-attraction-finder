@@ -5,7 +5,7 @@
 <header>  
   <nav class="navbar navbar-expand-md navbar-dark bg-dark">
     <div class="container-fluid">            
-      <a class="navbar-brand" href="#">Your-Logo</a>
+      <a class="navbar-brand" href="#"> Attraction Finder logo </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar" aria-controls="collapsibleNavbar" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>

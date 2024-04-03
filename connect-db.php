@@ -46,7 +46,7 @@ My database login credentials are here for us all to access the same database --
 $username = 'computingid'; 
 $password = 'password';
 $host = 'mysql01.cs.virginia.edu';
-$dbname = 'computingid';
+$dbname = 'mah7ks_a';
 $dsn = "mysql:host=$host;dbname=$dbname";
 
 ////////////////////////////////////////////

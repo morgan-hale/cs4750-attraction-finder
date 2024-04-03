@@ -18,13 +18,47 @@ function getAllAttractions()
 
 }
 
-function getRequestById($id)  
+function addAttraction($attraction_name, $street_address, $city, $creator_id)
+{
+    global $db;  // this is same as global database saved in connect-db file 
+
+    // $query = "INSERT INTO requests(reqDate, roomNumber, reqBy, repairDesc, reqPriority) VALUES ('2024-03-18', 'ABC', 'Someone', 'fix light', 'low')";
+    // bc PK auto increments, don't need to include it here
+
+    $query = "INSERT INTO AF_Attraction(attraction_name, street_address, city, creator_id) VALUES (:attraction_name, :street_address, :city, :creator_id)";
+    // ^ this is a PREPARED STATEMENT and is much better security bc input must follow a tempalte 
+
+    try{
+        $statement = $db->prepare($query);
+
+        // fill in the value 
+        $statement->bindValue(':attraction_name', $attraction_name);
+        $statement->bindValue(':street_address', $street_address);
+        $statement->bindValue(':city', $city);
+        $statement->bindValue(':creator_id', $creator_id);
+
+        // execute 
+        $statement->execute(); // if you don't call execute then it won't run anything
+        $statement->closeCursor(); // release the Cursor you you don't keep using the instance over and over?     
+    } catch (PDOException $e)
+    {
+        $e->getMessage();
+    } catch (Exception $e)
+    {
+        $e->getMessage();
+    }
+
+   
+}
+
+
+function getAttractionById($id)  
 {
     global $db;
-    $query = "SELECT * FROM requests WHERE reqId=:reqId"; // using the prepared statement template name
+    $query = "SELECT * FROM AF_Attraction WHERE attraction_id=:attraction_id"; // using the prepared statement template name
     $statement = $db->prepare($query); 
     // remember a prepared statement let's us precompile. but the colons still mean a "fill in the blank" value so we still need to fill that in here
-    $statement->bindValue(':reqId', $id); //actually filling in the value here
+    $statement->bindValue(':attraction_id', $id); //actually filling in the value here
     $statement->execute(); 
     $result = $statement->fetch(); 
     $statement->closeCursor();
@@ -34,31 +68,31 @@ function getRequestById($id)
 
 }
 
-function updateRequest($reqId, $reqDate, $roomNumber, $reqBy, $repairDesc, $reqPriority)
+
+function updateAttraction($attraction_id, $attraction_name, $street_address, $city, $creator_id)
 {
     global $db;
-    $query = "UPDATE requests SET reqDate=:reqDate, roomNumber=:roomNumber, reqBy=:reqBy, repairDesc=:repairDesc, reqPriority=:reqPriority WHERE reqId=:reqId" ; 
+    $query = "UPDATE AF_Attraction SET attraction_name=:attraction_name, street_address=:street_address, city=:city, creator_id=:creator_id WHERE attraction_id=:attraction_id" ; 
  
     $statement = $db->prepare($query);
-    $statement->bindValue(':reqId', $reqId);
-    $statement->bindValue(':reqDate', $reqDate);
-    $statement->bindValue(':roomNumber', $roomNumber);
-    $statement->bindValue(':reqBy',$reqBy);
-    $statement->bindValue(':repairDesc', $repairDesc);
-    $statement->bindValue(':reqPriority', $reqPriority);
+    $statement->bindValue(':attraction_id', $attraction_id);
+    $statement->bindValue(':attraction_name', $attraction_name);
+    $statement->bindValue(':roomstreet_addressNumber', $street_address);
+    $statement->bindValue(':city',$city);
+    $statement->bindValue(':creator_id', $creator_id);
  
     $statement->execute();
     $statement->closeCursor();
 
 }
 
-function deleteRequest($reqId)
+function deleteAttraction($attraction_id)
 {
 
     global $db;
-    $query = "DELETE FROM requests WHERE reqId=:reqId"; 
+    $query = "DELETE FROM AF_Attraction WHERE attraction_id=:attraction_id"; 
     $statement = $db->prepare($query); 
-    $statement-> bindValue(':reqId', $reqId);
+    $statement-> bindValue(':attraction_id', $attraction_id);
     $statement->execute(); 
     $statement->closeCursor();
 
