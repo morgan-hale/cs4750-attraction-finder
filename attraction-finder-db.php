@@ -3,6 +3,47 @@ in the process of converting the functions to interface with our project's table
 
 <?php
 
+
+function getAllAttractionsWithLocations()
+{
+    global $db; // don't keep making new database instance. keep using this global variable! 
+
+    $query = "SELECT attraction_name, CONCAT(street_address, ', ', city,', ', state,' ', zip_code) FROM AF_Attraction NATURAL JOIN AF_Location;";
+    $statement = $db->prepare($query); // just compiles. we don't need to pass in values so just execute! 
+    $statement->execute(); 
+    $result = $statement->fetchAll(); // fetches all rows in result. just fetch() returns first row. we need to save it to a variable, we'll call it result
+    $statement->closeCursor();
+    // we need to return the result back to the form 
+    return $result; // form will iterate over results and display one row at a time
+
+}
+
+
+function searchAttractionByName($search_value)
+{
+    global $db; // don't keep making new database instance. keep using this global variable! 
+    $query = "SELECT attraction_name, CONCAT(street_address, ', ', city,', ', state,' ', zip_code) FROM AF_Attraction NATURAL JOIN AF_Location WHERE attraction_name LIKE :search_val;";
+    try{
+        $statement = $db->prepare($query);
+        $concatenatedstring = "%" . $search_value . "%";
+        // var_dump($concatenatedstring);
+        $statement->bindValue(':search_val', $concatenatedstring);
+        $statement->execute(); 
+        $result = $statement->fetchAll(); // fetches all rows in result. just fetch() returns first row. we need to save it to a variable, we'll call it result
+        // var_dump($result);
+        $statement->closeCursor();
+        // we need to return the result back to the form 
+        return $result; // form will iterate over results and display one row at a time
+    } catch (PDOException $e)
+    {
+        $e->getMessage();
+    } catch (Exception $e)
+    {
+        $e->getMessage();
+    }
+
+}
+
 function getAllAttractions()
 {
     global $db; // don't keep making new database instance. keep using this global variable! 

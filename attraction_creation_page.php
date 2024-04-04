@@ -1,6 +1,4 @@
-<!-- this is a copy of the request.php file from potd5.
-it will be the main landing page for our site. we need to convert it to 
-display data for our project.  -->
+<!-- right now, this is just potd5 configured to work for the attraction database. unfortunately it doesn't completely work yet -->
 
 <?php include('header.php'); ?>
 

@@ -29,6 +29,8 @@ function addRequests($reqDate, $roomNumber, $reqBy, $repairDesc, $reqPriority)
         $statement->bindValue(':repairDesc', $repairDesc);
         $statement->bindValue(':reqPriority', $reqPriority);
 
+        var_dump($statement);
+
         // execute 
         $statement->execute(); // if you don't call execute then it won't run anything
         $statement->closeCursor(); // release the Cursor you you don't keep using the instance over and over?     
