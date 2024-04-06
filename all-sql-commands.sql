@@ -311,3 +311,26 @@ BEGIN
 END //
 
 DELIMITER ;
+
+
+-- !NEW! Checks on table attributes for database security
+
+ALTER TABLE AF_AttractionPhone
+ADD CONSTRAINT checkPhoneFormat
+CHECK (LENGTH(phone) = 12 AND SUBSTRING(phone, 4, 1) = '-' AND SUBSTRING(phone, 8, 1) = '-');
+
+ALTER TABLE AF_CustomerPrice
+ADD CONSTRAINT checkNonnegative
+CHECK (amount >= 0);
+
+ALTER TABLE AF_Location
+ADD CONSTRAINT checkStateAndZip
+CHECK (LENGTH(state) = 2 AND LENGTH(zip_code) = 5);
+
+ALTER TABLE AF_Password
+ADD CONSTRAINT checkHashLength
+CHECK (LENGTH(pass_hash) = 32);
+
+ALTER TABLE AF_Rating
+ADD CONSTRAINT checkValidRating
+CHECK (rating_value >=1 AND rating_value <= 5);
