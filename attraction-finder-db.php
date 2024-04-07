@@ -2,7 +2,6 @@
 
 <?php
 
-
 function getAllAttractionsWithLocations()
 {
     global $db; // don't keep making new database instance. keep using this global variable! 
@@ -20,7 +19,7 @@ function getAllAttractionsWithLocations()
 
 function searchAttractionByName($search_value)
 {
-    global $db; // don't keep making new database instance. keep using this global variable! 
+    global $db; 
     $query = "SELECT attraction_name, CONCAT(street_address, ', ', city,', ', state,' ', zip_code) FROM AF_Attraction NATURAL JOIN AF_Location WHERE attraction_name LIKE :search_val;";
     try{
         $statement = $db->prepare($query);
@@ -106,6 +105,30 @@ function getAttractionById($id)
     return $result;
 
 
+}
+
+function getPricesforAttraction($id)
+{
+    global $db;
+    $query = "SELECT * FROM AF_CustomerPrice WHERE attraction_id=:attraction_id";
+    $statement = $db->prepare($query); 
+    $statement->bindValue(':attraction_id', $id); 
+    $statement->execute(); 
+    $result = $statement->fetch(); 
+    $statement->closeCursor();
+    return $result; 
+}
+
+function getPhoneNumbersforAttraction($id)
+{
+    global $db;
+    $query = "SELECT * FROM AF_AttractionPhone WHERE attraction_id=:attraction_id";
+    $statement = $db->prepare($query); 
+    $statement->bindValue(':attraction_id', $id); 
+    $statement->execute(); 
+    $result = $statement->fetch(); 
+    $statement->closeCursor();
+    return $result; 
 }
 
 

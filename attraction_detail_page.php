@@ -1,6 +1,4 @@
-<!-- this is a copy of the request.php file from potd5.
-it will be the main landing page for our site. we need to convert it to 
-display data for our project.  -->
+<!-- detail page for attractoins, showing price and phone info. Still in progress  -->
 
 <?php include('header.php'); ?>
 
@@ -10,22 +8,17 @@ require("attraction-finder-db.php");
 ?>
 
 <?php // form handling
-  $list_of_attractions_with_locations = getAllAttractionsWithLocations();
-  // var_dump($list_of_attractions_with_locations);
+// still figuring out how to send ID over
+  $attraction_info = getAttractionById($_POST['']);
+  $price_info = getPricesforAttraction($_POST['']);
+  $phone_info = getPhoneNumbersforAttraction($_POST['']);
 
-  if ($_SERVER['REQUEST_METHOD'] == 'POST')
-  {
-    if (!empty($_POST['searchBtn']))  
-    {
-      // each of the POST names come from the name of the input in the form (scroll down and see)
-      $list_of_attractions_with_locations = searchAttractionByName($_POST['search_val']);
-      // var_dump($list_of_attractions_with_locations);
-    }  
-    else if (!empty($_POST['refreshBtn']))  
-    {
-      $list_of_attractions_with_locations = getAllAttractionsWithLocations();
-    } 
-  }
+  var_dump($attraction_info);
+  var_dump($price_info);
+  var_dump($phone_info);
+
+
+ 
 ?>
 
 <!DOCTYPE html> <!-- this isn't technically a tag, just says "use HTML5" -->
@@ -41,7 +34,7 @@ require("attraction-finder-db.php");
   <!-- keywords help with SEO stuff. need clear key words!  -->
   <link rel="icon" href="https://www.cs.virginia.edu/~up3f/cs3250/images/st-icon.png" type="image/png" />  
   <!-- icons also help with usability. this is the favicon. used with bookmarks -->
-  <title>Attraction Finder Landing Page</title>
+  <title>Attraction Detail Page</title>
   <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">  
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">  
   <link rel="stylesheet" href="maintenance-system.css">  
@@ -52,56 +45,18 @@ require("attraction-finder-db.php");
 <div class="container">
   <div class="row g-3 mt-2">
     <div class="col">
-      <h2>Attraction Finder Landing Page</h2>
+      <h2>Attraction Detail Page</h2>
     </div>  
   </div>
   
   <!---------------->
  <div>
 
-
-  <form method="post" action="<?php $_SERVER['PHP_SELF'] ?>" onsubmit="return validateInput()">
-  <!-- form tag specifies where user can interact. when user hits submit, what's in the form will be sent to server. -->
-
-    <table style="width:98%">
-      <tr>
-        <td width="50%">
-          <div class='mb-3'>
-            Attraction Name:
-            <input type='text' class='form-control' 
-                   id='search_val' name='search_val' 
-                   value="" /> 
-                   <!-- ^^if we are not updating, default value of form is empty. but if we are updating, fill with current row -->
-          </div>
-        </td>
-      </tr>
-     
-    </table>
-
-    <div class="row g-3 mx-auto">    
-      <div class="col-4 d-grid ">
-      <input type="submit" value="Search" id="searchBtn" name="searchBtn" class="btn btn-dark"
-           title="Submit name search" />                  
-      </div>	    
-      <div class="col-4 d-grid ">
-      <input type="submit" value="Refresh List" id="refreshBtn" name="refreshBtn" class="btn btn-outline-dark"
-           title="Return to entire list" />                  
-      </div>	 
-    </div>  
-    <div>
-  </div>  
-  </form>
-
-  </div>
-</div>
-
-
-
 <br/><br/>
 
 <hr/>
 <div class="container">
-<h3>List of attractions</h3>
+<h3>Selected Attraction</h3>
 <div class="row justify-content-center">  
 <table class="w3-table w3-bordered w3-card-4 center" style="width:100%">
   <thead>
@@ -111,15 +66,59 @@ require("attraction-finder-db.php");
     <th width="30%"><b>Address</b></th>  
   </tr>
   </thead>
+  <?php foreach ($attraction_info as $attr_info): ?>
+  <tr> 
+     <td><?php echo $attr_info['attraction_name']; ?></td>        
+   </tr>
+<?php endforeach; ?>  
+</table>
+</div> 
+
+<div class="container">
+<h3>Attraction Phone Numbers</h3>
+<div class="row justify-content-center">  
+<table class="w3-table w3-bordered w3-card-4 center" style="width:100%">
+  <thead>
+    <!-- these are the column names. bolded. -->
+  <tr style="background-color:#B0B0B0"> 
+    <th width="30%"><b>Label</b></th>        
+    <th width="30%"><b>Phone Number</b></th>  
+  </tr>
+  </thead>
   <!-- php code to iterate array of results, display each row in this table -->
   <!-- iterate array of results, display the existing requests -->
-  <?php foreach ($list_of_attractions_with_locations as $attr_info): ?>
+  <?php foreach ($phone_info as $pho_info): ?>
     <!-- for each ([collection of results] as [row_variable_name, whatever you want to call it. could call it row]) -->
   <tr> 
     <!-- tr is row. td is column -->
      <!-- echo is command in php to display text on screen. echo this column of this row -->
-     <td><?php echo $attr_info['attraction_name']; ?></td>        
-     <td><?php echo $attr_info["CONCAT(street_address, ', ', city,', ', state,' ', zip_code)"]; ?></td>            
+     <td><?php echo $pho_info['label']; ?></td>        
+     <td><?php echo $pho_info['phone']; ?></td>            
+   </tr>
+<?php endforeach; ?>  
+</table>
+</div>   
+
+<div class="container">
+<h3>Attraction Prices </h3>
+<div class="row justify-content-center">  
+<table class="w3-table w3-bordered w3-card-4 center" style="width:100%">
+  <thead>
+    <!-- these are the column names. bolded. -->
+  <tr style="background-color:#B0B0B0"> 
+    <th width="30%"><b>Customer Type</b></th>        
+    <th width="30%"><b>Price</b></th>  
+  </tr>
+  </thead>
+  <!-- php code to iterate array of results, display each row in this table -->
+  <!-- iterate array of results, display the existing requests -->
+  <?php foreach ($price_info as $pri_info): ?>
+    <!-- for each ([collection of results] as [row_variable_name, whatever you want to call it. could call it row]) -->
+  <tr> 
+    <!-- tr is row. td is column -->
+     <!-- echo is command in php to display text on screen. echo this column of this row -->
+     <td><?php echo $pri_info['customer_type']; ?></td>        
+     <td><?php echo $pri_info['amount']; ?></td>            
    </tr>
 <?php endforeach; ?>  
 </table>
