@@ -1,5 +1,5 @@
 -- This file contains all past, future, and general/template SQL queries we will use in our project.
--- To see ONLY queries that HAVE BEEN RUN (table creation, insertion, etc), please see the all-run-sql-commands-m2.sql file
+-- To see ONLY queries that were run as of the Milestone 2 deadline (table creation, insertion, etc), please see the all-run-sql-commands-m2.sql file
 
 -- Granting database access to teammates  
 -- from the mah7ks_a database: 
@@ -313,7 +313,7 @@ END //
 DELIMITER ;
 
 
--- !NEW! Checks on table attributes for database security
+-- !NEW for EC Milestone - database security! Checks on table attributes for database security
 
 ALTER TABLE AF_AttractionPhone
 ADD CONSTRAINT checkPhoneFormat
@@ -329,8 +329,21 @@ CHECK (LENGTH(state) = 2 AND LENGTH(zip_code) = 5);
 
 ALTER TABLE AF_Password
 ADD CONSTRAINT checkHashLength
-CHECK (LENGTH(pass_hash) = 32);
+CHECK (LENGTH(pass_hash) = 60);
 
 ALTER TABLE AF_Rating
 ADD CONSTRAINT checkValidRating
 CHECK (rating_value >=1 AND rating_value <= 5);
+
+-- updating passwords to new hash algorithm (builtin php hashing algo)
+UPDATE AF_Password 
+SET pass_hash = "$2y$10$gKuhKCJ5bJ28fMnOTVQvO.2I3ZhV.gtjF/OQt1joXkgm8LbAQXyxG"
+WHERE pass_id=1;
+
+UPDATE AF_Password 
+SET pass_hash = "$2y$10$7SXuk5cc7Sm62/yOpMr/zuKscqouT02JdYi8loB30mNY4BEBV.bQu"
+WHERE pass_id=2;
+
+UPDATE AF_Password 
+SET pass_hash = "$2y$10$8LmQ8IhPhAgmY2i88U8NVurQK./UcCQun0g.krW/eoIHwcE8jinKS"
+WHERE pass_id=3;

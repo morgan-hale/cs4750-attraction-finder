@@ -1,4 +1,4 @@
-<!-- this is from potd5. use as a reference for our project -->
+<!-- header after login page -->
 
 <?php session_start(); ?>
 
@@ -15,7 +15,7 @@
         <a class="nav-link" href="edit_page.php" style="color:white">Edit</a>
       </li>       
       <li class="nav-item">
-        <a class="nav-link" href="#"style="color:white">Log out</a>
+        <a class="nav-link" href="./signup_login/signup.php"style="color:white">Log in</a>
       </li>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar" aria-controls="collapsibleNavbar" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon" style="color:white"></span>
@@ -24,13 +24,13 @@
         <ul class="navbar-nav ms-auto">
           <!-- check if currently logged in, display Log out button 
                otherwise, display sign up and log in buttons -->
-          <?php if (!isset($_SESSION['username'])) { ?>              
+          <!-- <?php if (!isset($_SESSION['username'])) { ?>              
                          
           <?php  } else { ?>                    
             <li class="nav-item">                  
-              <a class="nav-link" href="signout.php" style="color:white">My Profile</a>
+              <a class="nav-link" href="/signup_login/login.php" style="color:white">My Profile</a>
             </li>
-          <?php } ?>
+          <?php } ?> -->
         
          
          
