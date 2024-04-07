@@ -1,4 +1,5 @@
-<!-- right now, this is just potd5 configured to work for the attraction database. unfortunately it doesn't completely work yet -->
+<!-- right now, this is just the potd5 configured to work for the attraction database. 
+unfortunately it doesn't completely work yet -->
 
 <?php include('header.php'); ?>
 

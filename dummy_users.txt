@@ -1,0 +1,15 @@
+Dummy user login information for testing purposes
+
+User 1
+Username: RebeccaNurse
+Password: ilovedogs
+
+User 2
+Username: PercyJackson
+Password: lightningthief
+
+User 3
+Username: PaulAtreides
+Password: spice
+
+

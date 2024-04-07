@@ -1,6 +1,4 @@
-<!-- this is a copy of the request.php file from potd5.
-it will be the main landing page for our site. we need to convert it to 
-display data for our project.  -->
+<!-- Attraction Search Page, the main landing page after logging in  -->
 
 <?php include('header.php'); ?>
 

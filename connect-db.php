@@ -1,83 +1,15 @@
-<!-- This is from potd5 but works for our project too. 
-My database login credentials are here for us all to access the same database -->
-
 <?php
 // Remember to start the database server (or GCP SQL instance) before trying to connect to it
-////////////////////////////////////////////
-/** S24, PHP (on Google Standard App Engine) connect to MySQL instance (GCP) **/
-// $username = 'root';                       // or your username
-// $password = 'password';     
-// $host = 'host';       // e.g., 'cs4750:us-east4:db-demo'; 
-// $dbname = 'guestbook';           // e.g., 'guestbook';
-// $dsn = "mysql:unix_socket=/cloudsql/host=$host/dbname=$dbname";
-
-//       e.g., "mysql:unix_socket=/cloudsql/cs4750:us-east4:db-demo;dbname=guestbook";
-
-// to get instance connection name, go to GCP SQL overview page
-////////////////////////////////////////////
-
-/** S24, PHP (on local XAMPP or CS server) connect to MySQL instance (GCP) **/
-// $username = 'root';
-// $password = 'password';
-// $host = 'host';       // e.g., 'cs4750:us-east4:db-demo'; 
-// $dbname = 'attraction-finder';           // e.g., 'guestbook';
-// $dsn = "mysql:host=;dbname=";   // connect PHP (XAMPP) to DB (GCP)
-      // e.g., "mysql:host=99.99.999.99;dbname=$dbname";   
-
-// to get public IP addres of the SQL instance, go to GCP SQL overview page
-
-// To connect from a local PHP to GCP SQL instance, need to add authormized network
-// to allow (my)machine to connect to the SQL instance. 
-// 1. Get IP of the computer that tries to connect to the SQL instance
-//    (use http://ipv4.whatismyv6.com/ to find the IP address)
-// 2. On the SQL connections page, add authorized networks, enter the IP address
-////////////////////////////////////////////
-
-/** S24, PHP (on GCP, local XAMPP, or CS server) connect to MySQL (on local XAMPP) **/
-// $username = 'your-username';
-// $password = 'your-password';
-// $host = 'localhost:3306';
-// $dbname = 'your-database';    
-// $dsn = "mysql:host=$host;dbname=$dbname";  
-////////////////////////////////////////////
 
 /** S24, PHP (on GCP, local XAMPP, or CS server) connect to MySQL (on CS server) **/
 // THIS IS YOUR PERSONAL ONE 
-$username = 'your-username'; 
-$password = 'your-password';
+$username = 'computing-id'; 
+$password = 'password';
 $host = 'mysql01.cs.virginia.edu';
 $dbname = 'mah7ks_a';
 $dsn = "mysql:host=$host;dbname=$dbname";
 
 ////////////////////////////////////////////
-
-// To find a hostname, access phpMyAdmin
-// - select tob "User accounts"
-// - locate the username you created, by default, the Host name is localhost
-
-// To find a port number, access phpMyAdmin
-// - use Console (bottom)
-// - type     SHOW VARIABLES WHERE Variable_name = 'port';
-// - execute the query    press Ctrl+Enter
-// (default port to mySQL database in XAMPP is 3306)
-
-// Be sure to use the correct database name (also case-sensitive)
-//   Note: Looking in the wrong database and/or wrong table may results in either
-//         cannot connect to the database, not find table, or no result set.
-//         Thus, specify the correct database name
-
-
-// DSN (Data Source Name) specifies the host computer for the MySQL datbase 
-// and the name of the database. If the MySQL datbase is running on the same server
-// as PHP, use the localhost keyword to specify the host computer
-
-// To connect to a MySQL database named db-demo, need three arguments: 
-// - specify a DSN, username, and password
-
-// Create an instance of PDO (PHP Data Objects) which connects to a MySQL database
-// (PDO defines an interface for accessing databases)
-// Syntax: 
-//    new PDO(dsn, username, password);
 
 
 /** connect to the database **/

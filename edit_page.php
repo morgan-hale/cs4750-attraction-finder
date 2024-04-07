@@ -1,3 +1,5 @@
+<!-- This will be the page for logged-in users to edit attractions they created. Work in progress -->
+
 <?php include('header.php'); ?>
 
 

@@ -1,5 +1,4 @@
-<!-- this is a copy of request-db.php from the potd. 
-in the process of converting the functions to interface with our project's tables instead -->
+<!-- Functions interacting with the database -->
 
 <?php
 
