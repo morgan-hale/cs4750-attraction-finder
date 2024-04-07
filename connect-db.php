@@ -43,8 +43,8 @@ My database login credentials are here for us all to access the same database --
 
 /** S24, PHP (on GCP, local XAMPP, or CS server) connect to MySQL (on CS server) **/
 // THIS IS YOUR PERSONAL ONE 
-$username = 'computingid'; 
-$password = 'password';
+$username = 'ncd6fc'; 
+$password = 'EmmyEmmy!1';
 $host = 'mysql01.cs.virginia.edu';
 $dbname = 'mah7ks_a';
 $dsn = "mysql:host=$host;dbname=$dbname";
