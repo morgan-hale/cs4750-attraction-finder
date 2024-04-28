@@ -8,6 +8,7 @@ require("attraction-finder-db.php");
 ?>
 
 <?php // form handling
+  $_SESSION['attr_id'] = "";
   $list_of_attractions_with_locations = getAllAttractionsWithLocations();
   // var_dump($list_of_attractions_with_locations);
 
@@ -117,7 +118,12 @@ require("attraction-finder-db.php");
     <!-- tr is row. td is column -->
      <!-- echo is command in php to display text on screen. echo this column of this row -->
      <td><?php echo $attr_info['attraction_name']; ?></td>        
-     <td><?php echo $attr_info["CONCAT(street_address, ', ', city,', ', state,' ', zip_code)"]; ?></td>            
+     <td><?php echo $attr_info["CONCAT(street_address, ', ', city,', ', state,' ', zip_code)"]; ?></td>   
+     <td>
+      <a href="attraction_detail_page.php?id= <?php echo $attr_info['attraction_id'];?>"  class="btn btn-primary active" >
+        View Details
+      </a>
+    </td>         
    </tr>
 <?php endforeach; ?>  
 </table>

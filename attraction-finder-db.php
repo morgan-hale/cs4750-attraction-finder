@@ -6,7 +6,7 @@ function getAllAttractionsWithLocations()
 {
     global $db; // don't keep making new database instance. keep using this global variable! 
 
-    $query = "SELECT attraction_name, CONCAT(street_address, ', ', city,', ', state,' ', zip_code) FROM AF_Attraction NATURAL JOIN AF_Location;";
+    $query = "SELECT attraction_id, attraction_name, CONCAT(street_address, ', ', city,', ', state,' ', zip_code) FROM AF_Attraction NATURAL JOIN AF_Location;";
     $statement = $db->prepare($query); // just compiles. we don't need to pass in values so just execute! 
     $statement->execute(); 
     $result = $statement->fetchAll(); // fetches all rows in result. just fetch() returns first row. we need to save it to a variable, we'll call it result
@@ -20,7 +20,7 @@ function getAllAttractionsWithLocationsByCreator($curruser)
 {
     global $db; // don't keep making new database instance. keep using this global variable! 
 
-    $query = "SELECT attraction_name, CONCAT(street_address, ', ', city,', ', state,' ', zip_code) FROM AF_Location NATURAL JOIN AF_Attraction JOIN AF_User ON AF_Attraction.creator_id = AF_User.user_id WHERE username=:curruser;";
+    $query = "SELECT attraction_id, attraction_name, CONCAT(street_address, ', ', city,', ', state,' ', zip_code) FROM AF_Location NATURAL JOIN AF_Attraction JOIN AF_User ON AF_Attraction.creator_id = AF_User.user_id WHERE username=:curruser;";
     $statement = $db->prepare($query); // just compiles. we don't need to pass in values so just execute! 
     
     $statement->bindValue(':curruser', $curruser);
@@ -110,7 +110,7 @@ function addAttraction($attraction_name, $street_address, $city, $creator_id)
 function getAttractionById($id)  
 {
     global $db;
-    $query = "SELECT * FROM AF_Attraction WHERE attraction_id=:attraction_id"; // using the prepared statement template name
+    $query = "SELECT * FROM AF_Attraction NATURAL JOIN AF_Location NATURAL JOIN AF_CustomerPrice NATURAL JOIN AF_Attraction_Has_Type NATURAL JOIN AF_AttractionType WHERE attraction_id=:attraction_id"; // using the prepared statement template name
     $statement = $db->prepare($query); 
     // remember a prepared statement let's us precompile. but the colons still mean a "fill in the blank" value so we still need to fill that in here
     $statement->bindValue(':attraction_id', $id); //actually filling in the value here
@@ -130,7 +130,7 @@ function getPricesforAttraction($id)
     $statement = $db->prepare($query); 
     $statement->bindValue(':attraction_id', $id); 
     $statement->execute(); 
-    $result = $statement->fetch(); 
+    $result = $statement->fetchAll(); 
     $statement->closeCursor();
     return $result; 
 }
@@ -142,24 +142,50 @@ function getPhoneNumbersforAttraction($id)
     $statement = $db->prepare($query); 
     $statement->bindValue(':attraction_id', $id); 
     $statement->execute(); 
-    $result = $statement->fetch(); 
+    $result = $statement->fetchAll(); 
     $statement->closeCursor();
     return $result; 
 }
 
 
-function updateAttraction($attraction_id, $attraction_name, $street_address, $city, $creator_id)
+function updateAttraction($attraction_id, $attraction_name, $street_address, $city, $state, $zip_code)
 {
     global $db;
-    $query = "UPDATE AF_Attraction SET attraction_name=:attraction_name, street_address=:street_address, city=:city, creator_id=:creator_id WHERE attraction_id=:attraction_id" ; 
- 
+
+    //  checking if location was changed (address and city are the PK so we'll need to insert a new row if it did)
+    $query = "SELECT * FROM AF_Location WHERE street_address=:street_address AND city=:city";
+    $statement = $db->prepare($query);
+    $statement->bindValue(':street_address',$street_address);
+    $statement->bindValue(':city',$city);
+    $result = $statement->execute();
+
+    //  if location did change, insert new location 
+    if ($result == null) {
+        $query = "INSERT INTO AF_Location(street_address, city, state, zip_code) VALUES (:street_address, :city, :state, :zip_code)";
+        $statement = $db->prepare($query);
+        $statement->bindValue(':street_address',$street_address);
+        $statement->bindValue(':city',$city);
+        $statement->bindValue(':state',$state);
+        $statement->bindValue(':zip_code',$zip_code);
+        $statement->execute();
+    } else {
+        $query = "UPDATE AF_Location SET state=:state, zip_code=:zip_code WHERE street_address=:street_address AND city=:city";
+        $statement = $db->prepare($query);
+        $statement->bindValue(':street_address',$street_address);
+        $statement->bindValue(':city',$city);
+        $statement->bindValue(':state',$state);
+        $statement->bindValue(':zip_code',$zip_code);
+        $statement->execute();
+    }
+       
+
+    // updating attraction 
+    $query = "UPDATE AF_Attraction SET attraction_name=:attraction_name, street_address=:street_address, city=:city WHERE attraction_id=:attraction_id" ; 
     $statement = $db->prepare($query);
     $statement->bindValue(':attraction_id', $attraction_id);
     $statement->bindValue(':attraction_name', $attraction_name);
-    $statement->bindValue(':roomstreet_addressNumber', $street_address);
-    $statement->bindValue(':city',$city);
-    $statement->bindValue(':creator_id', $creator_id);
- 
+    $statement->bindValue(':street_address', $street_address);
+    $statement->bindValue(':city',$city); 
     $statement->execute();
     $statement->closeCursor();
 

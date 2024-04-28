@@ -9,13 +9,16 @@ require("attraction-finder-db.php");
 
 <?php // form handling
 // still figuring out how to send ID over
-  $attraction_info = getAttractionById($_POST['']);
-  $price_info = getPricesforAttraction($_POST['']);
-  $phone_info = getPhoneNumbersforAttraction($_POST['']);
+  $attr_id = $_GET['id'];
+  $attr_id = trim($attr_id);
+  // var_dump($attr_id);
+  $attraction_info = getAttractionById($attr_id);
+  $price_info = getPricesforAttraction($attr_id);
+  $phone_info = getPhoneNumbersforAttraction($attr_id);
 
-  var_dump($attraction_info);
-  var_dump($price_info);
-  var_dump($phone_info);
+  // var_dump($attraction_info);
+  // var_dump( $price_info);
+  // var_dump($phone_info);
 
 
  
@@ -63,66 +66,65 @@ require("attraction-finder-db.php");
     <!-- these are the column names. bolded. -->
   <tr style="background-color:#B0B0B0"> 
     <th width="30%"><b>Attraction Name</b></th>        
-    <th width="30%"><b>Address</b></th>  
+    <th width="30%"><b>Street Address</b></th>  
+    <th width="30%"><b>City</b></th>  
+    <th width="30%"><b>State</b></th>  
+    <th width="30%"><b>Zip Code</b></th>  
   </tr>
   </thead>
-  <?php foreach ($attraction_info as $attr_info): ?>
   <tr> 
-     <td><?php echo $attr_info['attraction_name']; ?></td>        
-   </tr>
-<?php endforeach; ?>  
+     <td><?php echo $attraction_info['attraction_name']; ?></td>  
+     <td><?php echo $attraction_info['street_address']; ?></td>  
+     <td><?php echo $attraction_info['city']; ?></td>       
+     <td><?php echo $attraction_info['state']; ?></td>       
+     <td><?php echo $attraction_info['zip_code']; ?></td>       
+
 </table>
 </div> 
 
+<hr/>
 <div class="container">
-<h3>Attraction Phone Numbers</h3>
-<div class="row justify-content-center">  
-<table class="w3-table w3-bordered w3-card-4 center" style="width:100%">
-  <thead>
-    <!-- these are the column names. bolded. -->
-  <tr style="background-color:#B0B0B0"> 
-    <th width="30%"><b>Label</b></th>        
-    <th width="30%"><b>Phone Number</b></th>  
-  </tr>
-  </thead>
-  <!-- php code to iterate array of results, display each row in this table -->
-  <!-- iterate array of results, display the existing requests -->
-  <?php foreach ($phone_info as $pho_info): ?>
-    <!-- for each ([collection of results] as [row_variable_name, whatever you want to call it. could call it row]) -->
-  <tr> 
-    <!-- tr is row. td is column -->
-     <!-- echo is command in php to display text on screen. echo this column of this row -->
-     <td><?php echo $pho_info['label']; ?></td>        
-     <td><?php echo $pho_info['phone']; ?></td>            
-   </tr>
-<?php endforeach; ?>  
-</table>
-</div>   
+  <h3>Attraction Phone Numbers</h3>
+    <div class="row justify-content-center">  
+      <table class="w3-table w3-bordered w3-card-4 center" style="width:100%">
+        <thead>
+          <tr style="background-color:#B0B0B0"> 
+            <th width="30%"><b>Label</b></th>        
+            <th width="30%"><b>Phone Number</b></th>  
+          </tr>
+        </thead>
+        <?php foreach ($phone_info as $pho_info): ?>
+              <tr> 
+                <td><?php echo $pho_info['label']; ?></td>        
+                <td><?php echo $pho_info['phone']; ?></td>            
+              </tr>
+            <?php  endforeach; ?>  
+      </table>
+    </div>  
+</div> 
+<hr/>
 
 <div class="container">
-<h3>Attraction Prices </h3>
-<div class="row justify-content-center">  
-<table class="w3-table w3-bordered w3-card-4 center" style="width:100%">
-  <thead>
-    <!-- these are the column names. bolded. -->
-  <tr style="background-color:#B0B0B0"> 
-    <th width="30%"><b>Customer Type</b></th>        
-    <th width="30%"><b>Price</b></th>  
-  </tr>
-  </thead>
-  <!-- php code to iterate array of results, display each row in this table -->
-  <!-- iterate array of results, display the existing requests -->
-  <?php foreach ($price_info as $pri_info): ?>
-    <!-- for each ([collection of results] as [row_variable_name, whatever you want to call it. could call it row]) -->
-  <tr> 
-    <!-- tr is row. td is column -->
-     <!-- echo is command in php to display text on screen. echo this column of this row -->
-     <td><?php echo $pri_info['customer_type']; ?></td>        
-     <td><?php echo $pri_info['amount']; ?></td>            
-   </tr>
-<?php endforeach; ?>  
-</table>
-</div>   
+  <h3>Attraction Prices </h3>
+  <div class="row justify-content-center">  
+    <table class="w3-table w3-bordered w3-card-4 center" style="width:100%">
+      <thead>
+      <tr style="background-color:#B0B0B0"> 
+        <th width="30%"><b>Customer Type</b></th>        
+        <th width="30%"><b>Price</b></th>  
+      </tr>
+      </thead>
+        <?php foreach ($price_info as $pri_info): ?>
+          <tr> 
+            <td><?php echo $pri_info['customer_type']; ?></td>        
+            <td><?php echo $pri_info['amount']; ?></td>            
+          </tr>
+        <?php endforeach; ?>  
+    </table>
+  </div>   
+</div>
+
+
 
 
 <br/><br/>
