@@ -40,9 +40,12 @@
 
       <?php if (isset($_SESSION['username'])) : ?>    
         <!-- <li class="nav-item"> -->
-        <a class="nav-item nav-link" href="my_profile.php" style="color:white">My Profile</a>
+        <a class="nav-item nav-link" href="my_profile.php" style="color:white">My Profile - Welcome, <?php echo $_SESSION['username']; ?>!
+</a>
       <!-- </li>  -->
-        <?php endif ?>          
+        <?php endif ?>    
+         
+      
 
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar" aria-controls="collapsibleNavbar" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon" style="color:white"></span>
@@ -53,7 +56,6 @@
                otherwise, display sign up and log in buttons -->
           <?php if (isset($_SESSION['username'])) : ?>              
             <!-- <li class="nav-item">    -->
-            <?php echo $_SESSION['username']; ?>
             <a class="nav-item nav-link btn btn-primary" href="signup_login/login.php" style="color:white">Logout</a>
             <!-- </li>      -->
             <?php endif ?>          
