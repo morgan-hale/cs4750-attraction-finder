@@ -212,7 +212,8 @@ function getPhoneNumbersforAttraction($id)
 }
 
 // updates location table and attraction table for location/name updates
-function updateAttraction($attraction_id, $attraction_name, $street_address, $city, $state, $zip_code)
+ 
+function updateAttraction($attraction_id, $attraction_name, $street_address, $city, $state, $zip_code, $attr_type, $attr_price)
 {
     global $db;
 

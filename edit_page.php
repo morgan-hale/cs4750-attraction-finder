@@ -36,7 +36,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
   }  else if (!empty($_POST['cofmBtn']))  
   {
     // each of the POST names come from the name of the input in the form (scroll down and see)
-    updateAttraction($_POST['cofm_attraction_id'], $_POST['attr_name'], $_POST['address'], $_POST['city'], $_POST['state'], $_POST['zip_code']);
+    // updateAttraction($_POST['cofm_attraction_id'], $_POST['attr_name'], $_POST['address'], $_POST['city'], $_POST['state'], $_POST['zip_code'], $_POST['attr_type'], $_POST['attr_price']);
+    
+
+    //this is a workaround for broken update method; we can go in and fix that if we want but foreign keys w/o cascade are making things annoying
+    deleteAttraction($_POST['cofm_attraction_id']);
+    addAttraction($_POST['attr_name'], $_POST['address'], $_POST['city'], $_SESSION['username'], $_POST['state'], $_POST['zip_code'], $_POST['attr_type'], $_POST['attr_price']);
+    
     $list_of_attractions_with_locations = getAllAttractionsWithLocationsByCreator($_SESSION['username']); //refreshing again
   } 
 }
@@ -145,12 +151,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
            title="Create new attraction" />                  
       </div>	    
       <?php endif ?>
+
+
       <?php if ($attr_to_update != null) : ?>
       <div class="col-4 d-grid ">
       <input type="submit" value="Confirm update" id="cofmBtn" name="cofmBtn" class="btn btn-primary"
            title="Update attraction" />   
-      <input type="hidden" value="<?php echo $_POST['attraction_id']; ?>" name="cofm_attraction_id" />        
-             <!-- why do we need to attach this cofm_reqID? because of HTTP stateless property, the current attrId is only available at this request. we need to carry it to the next round of form submission by passing a token to the next request -->
+           <!-- <?php if (isset($_POST['attrId'])) : ?> -->
+              <input type="hidden" value="<?php echo $_POST['attrId']; ?>" name="cofm_attraction_id" id="cofm_attraction_id" style="display: none;" />
+            <!-- <?php endif; ?> -->
+           <!-- why do we need to attach this cofm_reqID? because of HTTP stateless property, the current attrId is only available at this request. we need to carry it to the next round of form submission by passing a token to the next request -->
       </div>	    
       <?php endif ?>
       <div class="col-4 d-grid">
