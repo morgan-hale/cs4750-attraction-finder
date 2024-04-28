@@ -14,6 +14,7 @@ require("attraction-finder-db.php");
   $list_of_attractions_with_locations = getAllAttractionsWithLocations();
   $list_of_attraction_types = getAllAttractionTypes();
 
+
   if ($_SERVER['REQUEST_METHOD'] == 'POST')
   {
     if (!empty($_POST['searchBtn']))  
@@ -81,14 +82,16 @@ require("attraction-finder-db.php");
       <input type="submit" value="Refresh List" id="refreshBtn" name="refreshBtn" class="btn btn-outline-dark"
            title="Return to entire list" />                  
       </div>	 
-      <div class="col-4 d-grid ">
+      <div class="col-4 d-grid">
         <select id="typeFilter" name="typeFilter" onchange="this.form.submit()">
-          <option disabled selected value=NULL>Filter by Attraction Type</option>
-          <?php foreach ($list_of_attraction_types as $type): ?>
-            <option value="<?php echo $type["attraction_type_name"]; ?>" <?php if ($_POST['typeFilter'] == $type["attraction_type_name"]) echo 'selected'; ?>><?php echo $type["attraction_type_name"]; ?></option>
-          <?php endforeach; ?>
+            <option disabled selected value="">Filter by Attraction Type</option>
+            <?php foreach ($list_of_attraction_types as $type): ?>
+                <option value="<?php echo $type["attraction_type_name"]; ?>" <?php echo isset($_POST['typeFilter']) && $_POST['typeFilter'] == $type["attraction_type_name"] ? 'selected' : ''; ?>>
+                    <?php echo $type["attraction_type_name"]; ?>
+                </option>
+            <?php endforeach; ?>
         </select>
-      </div>
+    </div>
     </div>  
     <div>
   </div>  
