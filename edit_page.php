@@ -13,6 +13,7 @@ require("attraction-finder-db.php");
 // getting list of all attractions made by the logged in user
 $list_of_attractions_with_locations = getAllAttractionsWithLocationsByCreator($_SESSION['username']);
 // var_dump($list_of_attractions_with_locations); // printing result to test
+$attr_to_update = null;
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST')
 {

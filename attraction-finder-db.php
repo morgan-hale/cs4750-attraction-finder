@@ -68,7 +68,6 @@ function getAllAttractions()
 }
 
 // attraction insertion function 
-// TODO: this isnt working right. i dont see any errors thrown but updates aren't happening...
 function addAttraction($attraction_name, $street_address, $city, $username, $state, $zip_code)
 {
     global $db;  
@@ -101,8 +100,11 @@ function addAttraction($attraction_name, $street_address, $city, $username, $sta
     $statement->bindValue(':username', $username);
     $statement->execute();
     $userid = $statement->fetch();
+    $userid = $userid['user_id'];
+
     // now insterting into location 
     $query = "INSERT INTO AF_Attraction(attraction_name, street_address, city, creator_id) VALUES (:attraction_name, :street_address, :city, :creator_id)";
+    
     try{
         $statement = $db->prepare($query);
         $statement->bindValue(':attraction_name', $attraction_name);
