@@ -7,7 +7,7 @@ function getAllAttractionsWithLocations()
 {
     global $db; // don't keep making new database instance. keep using this global variable! 
 
-    $query = "SELECT attraction_id, attraction_name, CONCAT(street_address, ', ', city,', ', state,' ', zip_code) FROM AF_Attraction NATURAL JOIN AF_Location;";
+    $query = "SELECT attraction_id, attraction_name, CONCAT(street_address, ', ', city,', ', state,' ', zip_code), attraction_type_name FROM AF_Attraction a NATURAL JOIN AF_Location l NATURAL JOIN AF_Attraction_Has_Type ht NATURAL JOIN AF_AttractionType t WHERE a.attraction_id = ht.attraction_id AND ht.attraction_type_id = t.attraction_type_id;";
     $statement = $db->prepare($query); // just compiles. we don't need to pass in values so just execute! 
     $statement->execute(); 
     $result = $statement->fetchAll(); // fetches all rows in result. just fetch() returns first row. we need to save it to a variable, we'll call it result
@@ -35,7 +35,7 @@ function getAllAttractionsWithLocationsByCreator($curruser)
 function searchAttractionByName($search_value)
 {
     global $db; 
-    $query = "SELECT attraction_name, CONCAT(street_address, ', ', city,', ', state,' ', zip_code) FROM AF_Attraction NATURAL JOIN AF_Location WHERE attraction_name LIKE :search_val;";
+    $query = "SELECT attraction_name, CONCAT(street_address, ', ', city,', ', state,' ', zip_code), attraction_type_name FROM AF_Attraction a NATURAL JOIN AF_Location l NATURAL JOIN AF_Attraction_Has_Type ht NATURAL JOIN AF_AttractionType t WHERE a.attraction_id = ht.attraction_id AND ht.attraction_type_id = t.attraction_type_id AND attraction_name LIKE :search_val;";
     try{
         $statement = $db->prepare($query);
         $concatenatedstring = "%" . $search_value . "%";
