@@ -3,8 +3,8 @@
 
 /** S24, PHP (on GCP, local XAMPP, or CS server) connect to MySQL (on CS server) **/
 // THIS IS YOUR PERSONAL ONE 
-$username = 'lch4et'; 
-$password = 'Loodycolo12345?';
+$username = 'computing-id'; 
+$password = 'password';
 $host = 'mysql01.cs.virginia.edu';
 $dbname = 'mah7ks_a';
 $dsn = "mysql:host=$host;dbname=$dbname";
