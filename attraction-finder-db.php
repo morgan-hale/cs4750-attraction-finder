@@ -2,6 +2,7 @@
 
 <?php
 
+// gets attraction with concated locations for search page
 function getAllAttractionsWithLocations()
 {
     global $db; // don't keep making new database instance. keep using this global variable! 
@@ -16,23 +17,21 @@ function getAllAttractionsWithLocations()
 
 }
 
+// same as general attraction + location search, but only showing those created by logged in user 
 function getAllAttractionsWithLocationsByCreator($curruser)
 {
-    global $db; // don't keep making new database instance. keep using this global variable! 
-
+    global $db; 
     $query = "SELECT attraction_id, attraction_name, CONCAT(street_address, ', ', city,', ', state,' ', zip_code) FROM AF_Location NATURAL JOIN AF_Attraction JOIN AF_User ON AF_Attraction.creator_id = AF_User.user_id WHERE username=:curruser;";
-    $statement = $db->prepare($query); // just compiles. we don't need to pass in values so just execute! 
-    
+    $statement = $db->prepare($query); 
     $statement->bindValue(':curruser', $curruser);
     $statement->execute(); 
-    $result = $statement->fetchAll(); // fetches all rows in result. just fetch() returns first row. we need to save it to a variable, we'll call it result
+    $result = $statement->fetchAll(); 
     $statement->closeCursor();
-    // we need to return the result back to the form 
-    return $result; // form will iterate over results and display one row at a time
+    return $result; 
 
 }
 
-
+// returns search result after user searches by attraction name via search bar (form)
 function searchAttractionByName($search_value)
 {
     global $db; 
@@ -40,14 +39,11 @@ function searchAttractionByName($search_value)
     try{
         $statement = $db->prepare($query);
         $concatenatedstring = "%" . $search_value . "%";
-        // var_dump($concatenatedstring);
         $statement->bindValue(':search_val', $concatenatedstring);
         $statement->execute(); 
-        $result = $statement->fetchAll(); // fetches all rows in result. just fetch() returns first row. we need to save it to a variable, we'll call it result
-        // var_dump($result);
+        $result = $statement->fetchAll(); 
         $statement->closeCursor();
-        // we need to return the result back to the form 
-        return $result; // form will iterate over results and display one row at a time
+        return $result; 
     } catch (PDOException $e)
     {
         $e->getMessage();
@@ -58,42 +54,62 @@ function searchAttractionByName($search_value)
 
 }
 
+// gets all attractions natural joined with location but not concatenated formatting (not sure if this is actually in use atm though...)
 function getAllAttractions()
 {
-    global $db; // don't keep making new database instance. keep using this global variable! 
-
+    global $db; 
     $query = "SELECT * FROM AF_Attraction NATURAL JOIN AF_Location";
-    $statement = $db->prepare($query); // just compiles. we don't need to pass in values so just execute! 
+    $statement = $db->prepare($query); 
     $statement->execute(); 
-    $result = $statement->fetchAll(); // fetches all rows in result. just fetch() returns first row. we need to save it to a variable, we'll call it result
+    $result = $statement->fetchAll(); 
     $statement->closeCursor();
-
-    // we need to return the result back to the form 
-    return $result; // form will iterate over results and display one row at a time
+    return $result; 
 
 }
 
-function addAttraction($attraction_name, $street_address, $city, $creator_id)
+// attraction insertion function 
+// TODO: this isnt working right. i dont see any errors thrown but updates aren't happening...
+function addAttraction($attraction_name, $street_address, $city, $username, $state, $zip_code)
 {
-    global $db;  // this is same as global database saved in connect-db file 
+    global $db;  
 
-    // $query = "INSERT INTO requests(reqDate, roomNumber, reqBy, repairDesc, reqPriority) VALUES ('2024-03-18', 'ABC', 'Someone', 'fix light', 'low')";
-    // bc PK auto increments, don't need to include it here
+     // adding to location table (if needed) before attraction table 
 
+    //  checking if location already exists 
+    $query = "SELECT * FROM AF_Location WHERE street_address=:street_address AND city=:city";
+    $statement = $db->prepare($query);
+    $statement->bindValue(':street_address',$street_address);
+    $statement->bindValue(':city',$city);
+    $statement->execute();
+    $result = $statement->fetch();
+
+    //  if location is new, insert new location with all the info
+    if ($result == null) {
+        $query = "INSERT INTO AF_Location(street_address, city, state, zip_code) VALUES (:street_address, :city, :state, :zip_code)";
+        $statement = $db->prepare($query);
+        $statement->bindValue(':street_address',$street_address);
+        $statement->bindValue(':city',$city);
+        $statement->bindValue(':state',$state);
+        $statement->bindValue(':zip_code',$zip_code);
+        $statement->execute();
+    }
+    // if street location already exists, no change in that table required
+   
+    // getting userid for associated username 
+    $query = "SELECT user_id FROM AF_User WHERE username=:username";
+    $statement = $db->prepare($query);
+    $statement->bindValue(':username', $username);
+    $statement->execute();
+    $userid = $statement->fetch();
+    // now insterting into location 
     $query = "INSERT INTO AF_Attraction(attraction_name, street_address, city, creator_id) VALUES (:attraction_name, :street_address, :city, :creator_id)";
-    // ^ this is a PREPARED STATEMENT and is much better security bc input must follow a tempalte 
-
     try{
         $statement = $db->prepare($query);
-
-        // fill in the value 
         $statement->bindValue(':attraction_name', $attraction_name);
         $statement->bindValue(':street_address', $street_address);
         $statement->bindValue(':city', $city);
-        $statement->bindValue(':creator_id', $creator_id);
-
-        // execute 
-        $statement->execute(); // if you don't call execute then it won't run anything
+        $statement->bindValue(':creator_id', $userid);
+        $statement->execute(); 
         $statement->closeCursor(); // release the Cursor you you don't keep using the instance over and over?     
     } catch (PDOException $e)
     {
@@ -102,27 +118,23 @@ function addAttraction($attraction_name, $street_address, $city, $creator_id)
     {
         $e->getMessage();
     }
-
-   
 }
 
 
+// return all attraction information (base table, location, price, phone, typeIDs, type names) for a given attraction ID
 function getAttractionById($id)  
 {
     global $db;
     $query = "SELECT * FROM AF_Attraction NATURAL JOIN AF_Location NATURAL JOIN AF_CustomerPrice NATURAL JOIN AF_Attraction_Has_Type NATURAL JOIN AF_AttractionType WHERE attraction_id=:attraction_id"; // using the prepared statement template name
     $statement = $db->prepare($query); 
-    // remember a prepared statement let's us precompile. but the colons still mean a "fill in the blank" value so we still need to fill that in here
-    $statement->bindValue(':attraction_id', $id); //actually filling in the value here
+    $statement->bindValue(':attraction_id', $id); 
     $statement->execute(); 
-    $result = $statement->fetch(); 
+    $result = $statement->fetch();  //!! Note difference btw fetch (returns 1 row) and fetchAll (returns all rows)!
     $statement->closeCursor();
-
     return $result;
-
-
 }
 
+// returns pricing table for given attraction ID
 function getPricesforAttraction($id)
 {
     global $db;
@@ -135,6 +147,7 @@ function getPricesforAttraction($id)
     return $result; 
 }
 
+// returns phone number table for given attraction ID
 function getPhoneNumbersforAttraction($id)
 {
     global $db;
@@ -147,10 +160,12 @@ function getPhoneNumbersforAttraction($id)
     return $result; 
 }
 
-
+// updates location table and attraction table for location/name updates
 function updateAttraction($attraction_id, $attraction_name, $street_address, $city, $state, $zip_code)
 {
     global $db;
+
+    // Updating location table before attraction table 
 
     //  checking if location was changed (address and city are the PK so we'll need to insert a new row if it did)
     $query = "SELECT * FROM AF_Location WHERE street_address=:street_address AND city=:city";
@@ -159,7 +174,7 @@ function updateAttraction($attraction_id, $attraction_name, $street_address, $ci
     $statement->bindValue(':city',$city);
     $result = $statement->execute();
 
-    //  if location did change, insert new location 
+    //  if street address or city did change, insert new location with all the info
     if ($result == null) {
         $query = "INSERT INTO AF_Location(street_address, city, state, zip_code) VALUES (:street_address, :city, :state, :zip_code)";
         $statement = $db->prepare($query);
@@ -168,6 +183,7 @@ function updateAttraction($attraction_id, $attraction_name, $street_address, $ci
         $statement->bindValue(':state',$state);
         $statement->bindValue(':zip_code',$zip_code);
         $statement->execute();
+    // if street address and city still exist, can just updated state, zip if needed
     } else {
         $query = "UPDATE AF_Location SET state=:state, zip_code=:zip_code WHERE street_address=:street_address AND city=:city";
         $statement = $db->prepare($query);
@@ -178,8 +194,7 @@ function updateAttraction($attraction_id, $attraction_name, $street_address, $ci
         $statement->execute();
     }
        
-
-    // updating attraction 
+    // updating attraction table now
     $query = "UPDATE AF_Attraction SET attraction_name=:attraction_name, street_address=:street_address, city=:city WHERE attraction_id=:attraction_id" ; 
     $statement = $db->prepare($query);
     $statement->bindValue(':attraction_id', $attraction_id);
@@ -188,20 +203,17 @@ function updateAttraction($attraction_id, $attraction_name, $street_address, $ci
     $statement->bindValue(':city',$city); 
     $statement->execute();
     $statement->closeCursor();
-
 }
 
+// deletes attraction with a given id 
+// !! NOTE: no deletion confirmation is implemented yet so be careful
 function deleteAttraction($attraction_id)
 {
-
     global $db;
     $query = "DELETE FROM AF_Attraction WHERE attraction_id=:attraction_id"; 
     $statement = $db->prepare($query); 
     $statement-> bindValue(':attraction_id', $attraction_id);
     $statement->execute(); 
     $statement->closeCursor();
-
-    
 }
-
 ?>

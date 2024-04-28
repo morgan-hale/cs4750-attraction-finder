@@ -44,25 +44,6 @@
             </li>     
             <?php endif ?>          
 
-      
-          <!-- 
-
-    <p>
-      Welcome 
-     <strong>
-     </strong>
-     </p>
-     <p> 
-      <a href="index.php?logout='1'" style="color: red;">
-      Click here to Logout
-       </a>
-    </p>      
-              
-
-
-           -->
-         
-         
         </ul>
       </div>
     </div>
