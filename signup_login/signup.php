@@ -2,6 +2,13 @@
 include('login_header.php');
 require_once '../connect-db.php';
 
+
+if (isset($_SESSION['username'])) : session_destroy();
+endif;             
+
+
+
+
 function validateInput($data) {
     $data = trim($data);
     $data = stripslashes($data);

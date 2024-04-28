@@ -16,6 +16,22 @@ function getAllAttractionsWithLocations()
 
 }
 
+function getAllAttractionsWithLocationsByCreator($curruser)
+{
+    global $db; // don't keep making new database instance. keep using this global variable! 
+
+    $query = "SELECT attraction_name, CONCAT(street_address, ', ', city,', ', state,' ', zip_code) FROM AF_Location NATURAL JOIN AF_Attraction JOIN AF_User ON AF_Attraction.creator_id = AF_User.user_id WHERE username=:curruser;";
+    $statement = $db->prepare($query); // just compiles. we don't need to pass in values so just execute! 
+    
+    $statement->bindValue(':curruser', $curruser);
+    $statement->execute(); 
+    $result = $statement->fetchAll(); // fetches all rows in result. just fetch() returns first row. we need to save it to a variable, we'll call it result
+    $statement->closeCursor();
+    // we need to return the result back to the form 
+    return $result; // form will iterate over results and display one row at a time
+
+}
+
 
 function searchAttractionByName($search_value)
 {

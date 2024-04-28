@@ -2,6 +2,14 @@
 include('login_header.php');
 require_once '../connect-db.php';
 
+if (isset($_SESSION['username'])) : session_destroy();
+endif;             
+
+
+$_SESSION['success'] = "";
+
+
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
    
 
@@ -26,6 +34,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if ($row) {
         if (password_verify($password, $row['pass_hash'])) {
             //later for keeping track of sessions. keeps the user logged in. 
+            session_start(); // starting user session??
+            $_SESSION['success'] = "You have logged in";
             $_SESSION['user_id'] = $row['user_id'];
             $_SESSION['username'] = $row['username'];
             header("Location: ../search_page.php");

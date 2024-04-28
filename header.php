@@ -11,12 +11,25 @@
       <li class="nav-item">
         <a class="nav-link" href="search_page.php" style="color:white">Search</a>
       </li>
+      <?php if (isset($_SESSION['username'])) : ?>    
+
       <li class="nav-item">
         <a class="nav-link" href="edit_page.php" style="color:white">Edit</a>
-      </li>       
+      </li>  
+      <?php endif ?>          
+ 
+      <?php if (!isset($_SESSION['username'])) : ?>    
       <li class="nav-item">
-        <a class="nav-link" href="./signup_login/signup.php"style="color:white">Log in</a>
+        <a class="nav-link" href="./signup_login/login.php"style="color:white">Log in</a>
       </li>
+      <?php endif ?>          
+
+      <?php if (isset($_SESSION['username'])) : ?>    
+        <li class="nav-item">
+        <a class="nav-link" href="edit_page.php" style="color:white">My Profile</a>
+      </li> 
+        <?php endif ?>          
+
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar" aria-controls="collapsibleNavbar" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon" style="color:white"></span>
       </button>
@@ -24,14 +37,30 @@
         <ul class="navbar-nav ms-auto">
           <!-- check if currently logged in, display Log out button 
                otherwise, display sign up and log in buttons -->
-          <!-- <?php if (!isset($_SESSION['username'])) { ?>              
-                         
-          <?php  } else { ?>                    
-            <li class="nav-item">                  
-              <a class="nav-link" href="/signup_login/login.php" style="color:white">My Profile</a>
-            </li>
-          <?php } ?> -->
-        
+          <?php if (isset($_SESSION['username'])) : ?>              
+            <li class="nav-item">   
+            <?php echo $_SESSION['username']; ?>
+              <a class="nav-link" href="signup_login/login.php" style="color:white">Logout</a>
+            </li>     
+            <?php endif ?>          
+
+      
+          <!-- 
+
+    <p>
+      Welcome 
+     <strong>
+     </strong>
+     </p>
+     <p> 
+      <a href="index.php?logout='1'" style="color: red;">
+      Click here to Logout
+       </a>
+    </p>      
+              
+
+
+           -->
          
          
         </ul>
