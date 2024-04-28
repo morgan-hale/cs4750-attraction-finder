@@ -191,17 +191,76 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
        </form>
      </td>
      <td>
-       <form action="edit_page.php" method="post">   
-          <input type="submit" value="Delete" name="deleteBtn" 
-                 class="btn btn-danger" /> 
-          <input type="hidden" name="attrId" value="<?php echo $attr_info['attraction_id']; ?>"  />
-       </form>
+      <form id="deleteForm_<?php echo $attr_info['attraction_id']; ?>" action="edit_page.php" method="post">
+        <input type="hidden" name="attrId" value="<?php echo $attr_info['attraction_id']; ?>" />
+        <label for="deleteModal_<?php echo $attr_info['attraction_id']; ?>" class="btn btn-danger">Delete</label>
+        <input type="checkbox" id="deleteModal_<?php echo $attr_info['attraction_id']; ?>" class="modal-checkbox" />
+        <div id="deleteConfirmation_<?php echo $attr_info['attraction_id']; ?>" class="modal">
+          <div class="modal-content">
+            <p>Are you sure you want to delete this attraction?</p>
+            <form action="edit_page.php" method="post">
+              <input type="hidden" name="attrId" value="<?php echo $attr_info['attraction_id']; ?>" />
+              <input type="submit" value="Yes" name="deleteBtn" class="btn btn-danger" />
+              <label for="deleteModal_<?php echo $attr_info['attraction_id']; ?>" class="btn btn-secondary">No</label>
+            </form>
+          </div>
+        </div>
+      </form>
      </td>
    </tr>
 <?php endforeach; ?>  
 </table>
 </div>   
 
+
+<div id="confirmationModal" class="modal" style="display: none;">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirmation</h5>
+        <button type="button" class="btn-close" onclick="hideConfirmationModal();" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete this attraction?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="hideConfirmationModal();">Cancel</button>
+        <button type="button" class="btn btn-danger" id="deleteBtn" name="deleteBtn" onclick="deleteAttraction();">Confirm</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* CSS for modal */
+.modal-checkbox {
+  display: none;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+.modal-checkbox:checked + .modal {
+  display: block;
+}
+</style>
 
 </body>
 </html>
