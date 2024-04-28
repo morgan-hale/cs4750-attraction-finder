@@ -36,6 +36,9 @@ require("attraction-finder-db.php");
   <div class="row g-3 mt-2">
     <div class="col">
       <h2>Attraction Details</h2>
+      <a href="search_page.php"  class="btn btn-primary active" >
+        Back
+      </a>
     </div>  
   </div>
 <div>

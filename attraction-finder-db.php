@@ -58,7 +58,7 @@ function searchAttractionByName($search_value)
 function filterAttractionsByType($type)
 {
     global $db; 
-    $query = "SELECT attraction_name, CONCAT(street_address, ', ', city,', ', state,' ', zip_code), attraction_type_name FROM AF_Attraction a NATURAL JOIN AF_Location l NATURAL JOIN AF_Attraction_Has_Type ht NATURAL JOIN AF_AttractionType t WHERE a.attraction_id = ht.attraction_id AND ht.attraction_type_id = t.attraction_type_id AND attraction_type_name=:attractionType;";
+    $query = "SELECT attraction_id, attraction_name, CONCAT(street_address, ', ', city,', ', state,' ', zip_code), attraction_type_name FROM AF_Attraction a NATURAL JOIN AF_Location l NATURAL JOIN AF_Attraction_Has_Type ht NATURAL JOIN AF_AttractionType t WHERE a.attraction_id = ht.attraction_id AND ht.attraction_type_id = t.attraction_type_id AND attraction_type_name=:attractionType;";
     try{
         $statement = $db->prepare($query);
         $statement->bindValue(':attractionType', $type);
