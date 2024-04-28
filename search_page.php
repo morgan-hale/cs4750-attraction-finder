@@ -26,6 +26,7 @@ require("attraction-finder-db.php");
     else if (!empty($_POST['refreshBtn']))  
     {
       $list_of_attractions_with_locations = getAllAttractionsWithLocations();
+      $_POST['typeFilter'] = null;
     } 
     else if (!empty($_POST['typeFilter']))  
     {
@@ -111,15 +112,20 @@ require("attraction-finder-db.php");
   <tr style="background-color:#B0B0B0"> 
     <th width="30%"><b>Attraction Name</b></th>        
     <th width="40%"><b>Address</b></th>  
+    <?php if (!empty($_POST['typeFilter'])): ?> 
     <th width="15%"><b>Attraction Type</b></th>
+    <?php endif ?>
+
     <th width="10%"><b>Details</b></th>
   </tr>
   </thead>
   <?php foreach ($list_of_attractions_with_locations as $attr_info): ?>
   <tr> 
      <td><?php echo $attr_info['attraction_name']; ?></td>        
-     <td><?php echo $attr_info["CONCAT(street_address, ', ', city,', ', state,' ', zip_code)"]; ?></td>   
+     <td><?php echo $attr_info["CONCAT(street_address, ', ', city,', ', state,' ', zip_code)"]; ?></td>  
+     <?php if (!empty($_POST['typeFilter'])): ?> 
      <td><?php echo $attr_info["attraction_type_name"]; ?></td> 
+     <?php endif ?>
      <td>
       <a href="attraction_detail_page.php?id= <?php echo $attr_info['attraction_id'];?>"  class="btn btn-primary active" >
         View Details
