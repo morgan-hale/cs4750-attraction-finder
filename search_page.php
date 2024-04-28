@@ -94,13 +94,16 @@ require("attraction-finder-db.php");
   <thead>
   <tr style="background-color:#B0B0B0"> 
     <th width="30%"><b>Attraction Name</b></th>        
-    <th width="30%"><b>Address</b></th>  
+    <th width="40%"><b>Address</b></th>  
+    <th width="15%"><b>Attraction Type</b></th>
+    <th width="10%"><b>Details</b></th>
   </tr>
   </thead>
   <?php foreach ($list_of_attractions_with_locations as $attr_info): ?>
   <tr> 
      <td><?php echo $attr_info['attraction_name']; ?></td>        
      <td><?php echo $attr_info["CONCAT(street_address, ', ', city,', ', state,' ', zip_code)"]; ?></td>   
+     <td><?php echo $attr_info["attraction_type_name"]; ?></td> 
      <td>
       <a href="attraction_detail_page.php?id= <?php echo $attr_info['attraction_id'];?>"  class="btn btn-primary active" >
         View Details
