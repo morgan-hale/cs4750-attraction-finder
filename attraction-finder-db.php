@@ -54,6 +54,27 @@ function searchAttractionByName($search_value)
 
 }
 
+//returns filtered result based on type via a drop down menu
+function filterAttractionsByType($type)
+{
+    global $db; 
+    $query = "SELECT attraction_name, CONCAT(street_address, ', ', city,', ', state,' ', zip_code), attraction_type_name FROM AF_Attraction a NATURAL JOIN AF_Location l NATURAL JOIN AF_Attraction_Has_Type ht NATURAL JOIN AF_AttractionType t WHERE a.attraction_id = ht.attraction_id AND ht.attraction_type_id = t.attraction_type_id AND attraction_type_name=:attractionType;";
+    try{
+        $statement = $db->prepare($query);
+        $statement->bindValue(':attractionType', $type);
+        $statement->execute(); 
+        $result = $statement->fetchAll(); 
+        $statement->closeCursor();
+        return $result; 
+    } catch (PDOException $e)
+    {
+        $e->getMessage();
+    } catch (Exception $e)
+    {
+        $e->getMessage();
+    }
+}
+
 // gets all attractions natural joined with location but not concatenated formatting (not sure if this is actually in use atm though...)
 function getAllAttractions()
 {
@@ -132,6 +153,17 @@ function getAttractionById($id)
     $result = $statement->fetch();  //!! Note difference btw fetch (returns 1 row) and fetchAll (returns all rows)!
     $statement->closeCursor();
     return $result;
+}
+
+function getAllAttractionTypes()
+{
+    global $db; 
+    $query = "SELECT * FROM AF_AttractionType";
+    $statement = $db->prepare($query); 
+    $statement->execute(); 
+    $result = $statement->fetchAll(); 
+    $statement->closeCursor();
+    return $result; 
 }
 
 // returns pricing table for given attraction ID

@@ -12,6 +12,7 @@ require("attraction-finder-db.php");
   $_SESSION['attr_id'] = "";
   // getting list of all attractions and concated locations to display in big table
   $list_of_attractions_with_locations = getAllAttractionsWithLocations();
+  $list_of_attraction_types = getAllAttractionTypes();
 
   if ($_SERVER['REQUEST_METHOD'] == 'POST')
   {
@@ -24,6 +25,10 @@ require("attraction-finder-db.php");
     else if (!empty($_POST['refreshBtn']))  
     {
       $list_of_attractions_with_locations = getAllAttractionsWithLocations();
+    } 
+    else if (!empty($_POST['typeFilter']))  
+    {
+      $list_of_attractions_with_locations = filterAttractionsByType($_POST['typeFilter']);
     } 
   }
 ?>
@@ -76,6 +81,14 @@ require("attraction-finder-db.php");
       <input type="submit" value="Refresh List" id="refreshBtn" name="refreshBtn" class="btn btn-outline-dark"
            title="Return to entire list" />                  
       </div>	 
+      <div class="col-4 d-grid ">
+        <select id="typeFilter" name="typeFilter" onchange="this.form.submit()">
+          <option disabled selected value=NULL>Filter by Attraction Type</option>
+          <?php foreach ($list_of_attraction_types as $type): ?>
+            <option value="<?php echo $type["attraction_type_name"]; ?>" <?php if ($_POST['typeFilter'] == $type["attraction_type_name"]) echo 'selected'; ?>><?php echo $type["attraction_type_name"]; ?></option>
+          <?php endforeach; ?>
+        </select>
+      </div>
     </div>  
     <div>
   </div>  
@@ -90,7 +103,7 @@ require("attraction-finder-db.php");
 <div class="container">
 <h3>List of attractions</h3>
 <div class="row justify-content-center">  
-<table class="w3-table w3-bordered w3-card-4 center" style="width:100%">
+<table class="w3-table w3-bordered w3-card-4 center attraction-table" style="width:100%">
   <thead>
   <tr style="background-color:#B0B0B0"> 
     <th width="30%"><b>Attraction Name</b></th>        
@@ -121,6 +134,22 @@ require("attraction-finder-db.php");
 
 <!-- <script src='maintenance-system.js'></script> -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+<!-- <script>
+  document.getElementById('typeFilter').addEventListener('change', function() {
+    var selectedType = this.value;
+    // Send an AJAX request to the server
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '<?php echo $_SERVER["PHP_SELF"]; ?>', true);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        // Update the table body content with the filtered results
+        document.querySelector('.attraction-table tbody').innerHTML = xhr.responseText;
+      }
+    };
+    xhr.send('typeFilter=' + selectedType);
+  });
+</script> -->
 
 </body>
 </html>
