@@ -40,7 +40,7 @@
 
       <?php if (isset($_SESSION['username'])) : ?>    
         <!-- <li class="nav-item"> -->
-        <a class="nav-item nav-link" href="edit_page.php" style="color:white">My Profile</a>
+        <a class="nav-item nav-link" href="my_profile.php" style="color:white">My Profile</a>
       <!-- </li>  -->
         <?php endif ?>          
 
@@ -62,4 +62,5 @@
       </div>
     </div>
   </nav>
-</header>    
+</header>   
+<br> 
