@@ -89,12 +89,13 @@ function getAllAttractions()
 }
 
 // attraction insertion function 
-// TODO: this isnt working right. i dont see any errors thrown but updates aren't happening...
-function addAttraction($attraction_name, $street_address, $city, $username, $state, $zip_code)
+function addAttraction($attraction_name, $street_address, $city, $username, $state, $zip_code, $attraction_type, $attraction_price)
 {
     global $db;  
 
      // adding to location table (if needed) before attraction table 
+     $type_id = $attraction_type[4];
+    //  var_dump($attraction_price);
 
     //  checking if location already exists 
     $query = "SELECT * FROM AF_Location WHERE street_address=:street_address AND city=:city";
@@ -122,7 +123,9 @@ function addAttraction($attraction_name, $street_address, $city, $username, $sta
     $statement->bindValue(':username', $username);
     $statement->execute();
     $userid = $statement->fetch();
-    // now insterting into location 
+    $userid = $userid['user_id'];
+
+    // now insterting into attraction 
     $query = "INSERT INTO AF_Attraction(attraction_name, street_address, city, creator_id) VALUES (:attraction_name, :street_address, :city, :creator_id)";
     try{
         $statement = $db->prepare($query);
@@ -139,6 +142,22 @@ function addAttraction($attraction_name, $street_address, $city, $username, $sta
     {
         $e->getMessage();
     }
+
+    $attraction_id = $db->lastInsertId();
+
+    //insert attraction's type into hastype
+    $query = "INSERT INTO AF_Attraction_Has_Type(attraction_type_id, attraction_id) VALUES (:type_id, :attraction_id)";
+    $statement = $db->prepare($query);
+    $statement->bindValue(':type_id', $type_id);
+    $statement->bindValue(':attraction_id', $attraction_id);
+    $statement->execute();
+
+    //insert attraction's price into hasprice; currently this hard codes customer type until we implement something more flexible
+    $query = "INSERT INTO AF_CustomerPrice(attraction_id, customer_type, amount) VALUES (:attraction_id, 'Adult',:attraction_price)";
+    $statement = $db->prepare($query);
+    $statement->bindValue(':attraction_price', $attraction_price);
+    $statement->bindValue(':attraction_id', $attraction_id);
+    $statement->execute();
 }
 
 
@@ -242,6 +261,18 @@ function updateAttraction($attraction_id, $attraction_name, $street_address, $ci
 function deleteAttraction($attraction_id)
 {
     global $db;
+    $query = "DELETE FROM AF_Attraction_Has_Type WHERE attraction_id=:attraction_id"; 
+    $statement = $db->prepare($query); 
+    $statement-> bindValue(':attraction_id', $attraction_id);
+    $statement->execute(); 
+    $statement->closeCursor();
+
+    $query = "DELETE FROM AF_CustomerPrice WHERE attraction_id=:attraction_id"; 
+    $statement = $db->prepare($query); 
+    $statement-> bindValue(':attraction_id', $attraction_id);
+    $statement->execute(); 
+    $statement->closeCursor();
+
     $query = "DELETE FROM AF_Attraction WHERE attraction_id=:attraction_id"; 
     $statement = $db->prepare($query); 
     $statement-> bindValue(':attraction_id', $attraction_id);

@@ -10,7 +10,9 @@ require("attraction-finder-db.php");
 <?php // form handling
   $attr_id = $_GET['id']; // attractionID sent over from search page 
   $attr_id = trim($attr_id); // ID sent over a a string with leading blank space so this trims that off
+  // var_dump($attr_id);
   $attraction_info = getAttractionById($attr_id); // general attraction info 
+  // var_dump($attraction_info);
   $price_info = getPricesforAttraction($attr_id); // price info 
   $phone_info = getPhoneNumbersforAttraction($attr_id); // phone number info
 ?>

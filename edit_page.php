@@ -13,6 +13,7 @@ require("attraction-finder-db.php");
 // getting list of all attractions made by the logged in user
 $list_of_attractions_with_locations = getAllAttractionsWithLocationsByCreator($_SESSION['username']);
 // var_dump($list_of_attractions_with_locations); // printing result to test
+$attr_to_update = null;
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST')
 {
@@ -24,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
   // TODO: attraction creation still not working for some reason (even though updating through same table does work)
   else if (!empty($_POST['addBtn']))  
   {
-    addAttraction($_POST['attr_name'], $_POST['address'], $_POST['city'], $_SESSION['username'], $_POST['state'], $_POST['zip_code']);
+    addAttraction($_POST['attr_name'], $_POST['address'], $_POST['city'], $_SESSION['username'], $_POST['state'], $_POST['zip_code'], $_POST['attr_type'], $_POST['attr_price']);
     $list_of_attractions_with_locations = getAllAttractionsWithLocationsByCreator($_SESSION['username']); //refreshing table view
   } 
   else if (!empty($_POST['deleteBtn']))
@@ -59,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
 <body> 
 <form method="post" action="<?php $_SERVER['PHP_SELF'] ?>" onsubmit="return validateInput()">
   <!-- form tag specifies where user can interact. when user hits submit, what's in the form will be sent to server. -->
-    <h3> Create or update an attraction</h3>
+    <h3> Create or update your attractions</h3>
     <table style="width:98%">
     <tr>
         <td colspan=2>
@@ -107,6 +108,33 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
           </div>
         </td>
       </tr>
+
+      <tr>
+        <td colspan="2">
+            <div class="mb-3">
+                Select Type of Attraction:
+                <select class="form-control" id="attr_type" name="attr_type">
+                    <option value="type1">Hike</option>
+                    <option value="type2">Restaurant</option>
+                    <option value="type3">Theme Park</option>
+                    <option value="type4">Outdoor Activity</option>
+                    <option value="type5">Indoor Activity</option>
+                </select>
+            </div>
+        </td>
+    </tr>
+
+    <tr>
+    <td colspan="2">
+        <div class='mb-3'>
+            Attraction Price:
+            <input type='text' class='form-control' id='attr_price' name='attr_price'
+                   placeholder='Enter a dollar amount, or 0.00 if free' pattern="\d+(\.\d{2})?" 
+                   title="Please enter a valid dollar amount (e.g., 100.00)" required /> 
+        </div>
+    </td>
+  </tr>
+
     </table>
 
     <div class="row g-3 mx-auto">  
