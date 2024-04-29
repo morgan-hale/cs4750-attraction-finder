@@ -332,7 +332,8 @@ function updateAttraction($attraction_id, $attraction_name, $street_address, $ci
     $statement = $db->prepare($query);
     $statement->bindValue(':street_address',$street_address);
     $statement->bindValue(':city',$city);
-    $result = $statement->execute();
+    $statement->execute();
+    $result = $statement->fetch(); 
 
     //  if street address or city did change, insert new location with all the info
     if ($result == null) {

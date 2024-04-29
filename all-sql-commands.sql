@@ -348,3 +348,15 @@ UPDATE AF_Password
 SET pass_hash = "$2y$10$8LmQ8IhPhAgmY2i88U8NVurQK./UcCQun0g.krW/eoIHwcE8jinKS"
 WHERE pass_id=3;
 
+-- ! NEW FOR FINAL MILESTONE: New table for address changes (logged using a trigger)
+CREATE TABLE IF NOT EXISTS AF_AttractionUpdateLog (
+    log_id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+    attraction_id INT NOT NULL,
+   	user_id INT NOT NULL,
+    old_address VARCHAR(255) NOT NULL,
+    new_address  VARCHAR(255) NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES AF_User(user_id),
+    FOREIGN KEY (attraction_id) REFERENCES AF_Attraction(attraction_id)
+);
+
+
