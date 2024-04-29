@@ -22,11 +22,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
     // if update btn is clicked, grab that attraction's info
     $attr_to_update = getAttractionById($_POST['attrId']);
   }
-  else if (!empty($_POST['addBtn']))  
-  {
-    addAttraction($_POST['attr_name'], $_POST['address'], $_POST['city'], $_SESSION['username'], $_POST['state'], $_POST['zip_code'], $_POST['attr_type'], $_POST['attr_type2'], $_POST['phone_label'], $_POST['phone_number2'], $_POST['phone_label2'], $_POST['phone_number'], $_POST['cust_type'], $_POST['attr_price'],$_POST['cust_type2'], $_POST['attr_price2']);
-    $list_of_attractions_with_locations = getAllAttractionsWithLocationsByCreator($_SESSION['username']); //refreshing table view
-  } 
+  // else if (!empty($_POST['addBtn']))  
+  // {
+  //   addAttraction($_POST['attr_name'], $_POST['address'], $_POST['city'], $_SESSION['username'], $_POST['state'], $_POST['zip_code'], $_POST['attr_type'], $_POST['attr_type2'], $_POST['phone_label'], $_POST['phone_number2'], $_POST['phone_label2'], $_POST['phone_number'], $_POST['cust_type'], $_POST['attr_price'],$_POST['cust_type2'], $_POST['attr_price2']);
+  //   $list_of_attractions_with_locations = getAllAttractionsWithLocationsByCreator($_SESSION['username']); //refreshing table view
+  // } 
   else if (!empty($_POST['deleteBtn']))
    {
     deleteAttraction($_POST['attrId']);
@@ -35,12 +35,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
   }  else if (!empty($_POST['cofmBtn']))  
   {
     // each of the POST names come from the name of the input in the form (scroll down and see)
-    // updateAttraction($_POST['cofm_attraction_id'], $_POST['attr_name'], $_POST['address'], $_POST['city'], $_POST['state'], $_POST['zip_code'], $_POST['attr_type'], $_POST['attr_price']);
+    updateAttraction($_POST['cofm_attraction_id'], $_POST['attr_name'], $_POST['address'], $_POST['city'], $_POST['state'], $_POST['zip_code'], $_POST['attr_type']);
     
 
     //this is a workaround for broken update method; we can go in and fix that if we want but foreign keys w/o cascade are making things annoying
-    deleteAttraction($_POST['cofm_attraction_id']);
-    addAttraction($_POST['attr_name'], $_POST['address'], $_POST['city'], $_SESSION['username'], $_POST['state'], $_POST['zip_code'], $_POST['attr_type'], $_POST['attr_price']);
+    // deleteAttraction($_POST['cofm_attraction_id']);
+    // addAttraction($_POST['attr_name'], $_POST['address'], $_POST['city'], $_SESSION['username'], $_POST['state'], $_POST['zip_code'], $_POST['attr_type'], $_POST['attr_price']);
     
     $list_of_attractions_with_locations = getAllAttractionsWithLocationsByCreator($_SESSION['username']); //refreshing again
   } 
@@ -63,9 +63,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
 </head>
 
 <body> 
+<?php  if (!empty($_POST['updateBtn'])) : ?>
 <form method="post" action="<?php $_SERVER['PHP_SELF'] ?>" onsubmit="return validateInput()">
   <!-- form tag specifies where user can interact. when user hits submit, what's in the form will be sent to server. -->
-    <h3> Create or update your attractions</h3>
+    <h3> Update your attraction</h3>
     <table style="width:98%">
     <tr>
         <td colspan=2>
@@ -73,7 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
             Attraction Name:
             <input type='text' class='form-control' id='attr_name' name='attr_name'
                    placeholder='Enter a name for the attraction'
-                   value="<?php if ($attr_to_update != null) echo $attr_to_update['attraction_name'] ?>" /> 
+                   value="<?php echo $attr_to_update['attraction_name'] ?>" /> 
           </div>
         </td>
       </tr>
@@ -83,7 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
             Street Address:
             <input type='text' class='form-control' 
                    id='address' name='address' 
-                   value="<?php if ($attr_to_update != null) echo $attr_to_update['street_address'] ?>" /> 
+                   value="<?php echo $attr_to_update['street_address'] ?>" /> 
                    <!-- ^^if we are not updating, default value of form is empty. but if we are updating, fill with current row -->
           </div>
         </td>
@@ -91,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
           <div class='mb-3'>
             City:
             <input type='text' class='form-control' id='city' name='city' 
-              value="<?php if ($attr_to_update != null) echo $attr_to_update['city'] ?>" /> 
+              value="<?php echo $attr_to_update['city'] ?>" /> 
           </div>
         </td>
       </tr>
@@ -102,143 +103,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
             State:
             <input type='text' class='form-control' 
                    id='state' name='state' 
-                   value="<?php if ($attr_to_update != null) echo $attr_to_update['state'] ?>" /> 
+                   value="<?php echo $attr_to_update['state'] ?>" /> 
           </div>
         </td>
         <td>
           <div class='mb-3'>
             Zip Code:
             <input type='text' class='form-control' id='zip_code' name='zip_code' 
-              value="<?php if ($attr_to_update != null) echo $attr_to_update['zip_code'] ?>" /> 
+              value="<?php echo $attr_to_update['zip_code'] ?>" /> 
           </div>
         </td>
       </tr>
-    <tr>
-        <td width="50%">
-          <div class='mb-3'>
-            Select Type of Attraction:
-            <select class="form-control" id="attr_type" name="attr_type">
-                    <option value="type1">Hike</option>
-                    <option value="type2">Restaurant</option>
-                    <option value="type3">Theme Park</option>
-                    <option value="type4">Outdoor Activity</option>
-                    <option value="type5">Indoor Activity</option>
-                </select>
-          </div>
-        </td>
-        <td>
-          <div class='mb-3'>
-          Select a Secondary Type of Attraction (if desired):
-                <select class="form-control" id="attr_type2" name="attr_type2">
-                    <option value="type1">Hike</option>
-                    <option value="type2">Restaurant</option>
-                    <option value="type3">Theme Park</option>
-                    <option value="type4">Outdoor Activity</option>
-                    <option value="type5">Indoor Activity</option>
-                </select>
-          </div>
-        </td>
-      </tr>
-
-      <tr>
-        <td width="50%">
-          <div class='mb-3'>
-          Phone Number Label (if desired):
-            <input type='text' class='form-control' id='phone_label' name='phone_label'
-                   placeholder='Enter a label for the following phone number, like Help Desk' 
-                     /> 
-          </div>
-        </td>
-        <td>
-          <div class='mb-3'>
-          Enter a phone number associated with the label:
-            <input type='text' class='form-control' id='phone_number' name='phone_number'
-                   placeholder='Enter a phone number in the pattern 123-456-7890' pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" 
-                   title="Please enter a valid phone number (e.g., xxx-xxx-xxxx)" /> 
-          </div>
-        </td>
-      </tr>
-
-      <tr>
-        <td width="50%">
-          <div class='mb-3'>
-          Second Phone Number Label (if desired):
-            <input type='text' class='form-control' id='phone_label2' name='phone_label2'
-                   placeholder='Enter a label for the following phone number, like Help Desk' 
-                     /> 
-          </div>
-        </td>
-        <td>
-          <div class='mb-3'>
-          Enter a phone number associated with the label:
-            <input type='text' class='form-control' id='phone_number2' name='phone_number2'
-                   placeholder='Enter a phone number in the pattern 123-456-7890' pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" 
-                   title="Please enter a valid phone number (e.g., xxx-xxx-xxxx)" /> 
-          </div>
-        </td>
-      </tr>
-
-      <tr>
-        <td width="50%">
-          <div class='mb-3'>
-          Customer Type:
-            <input type='text' class='form-control' id='cust_type' name='cust_type'
-                   placeholder='Enter a name describing the customer, like Under 12' 
-                    required /> 
-          </div>
-        </td>
-        <td>
-          <div class='mb-3'>
-          Enter an associated price for this customer type:
-            <input type='text' class='form-control' id='attr_price' name='attr_price'
-                   placeholder='Enter a dollar amount, or 0.00 if free' pattern="\d+(\.\d{2})?" 
-                   title="Please enter a valid dollar amount (e.g., 100.00), even if it's free (0.00)" required /> 
-          </div>
-        </td>
-      </tr>
-
-      <tr>
-        <td width="50%">
-          <div class='mb-3'>
-          Second Customer Type (if desired):
-            <input type='text' class='form-control' id='cust_type2' name='cust_type2'
-                   placeholder='Enter a name describing the customer, like Under 12' 
-                     /> 
-          </div>
-        </td>
-        <td>
-          <div class='mb-3'>
-          Enter an associated price for this customer type:
-            <input type='text' class='form-control' id='attr_price2' name='attr_price2'
-                   placeholder='Enter a dollar amount, or 0.00 if free' pattern="\d+(\.\d{2})?" 
-                   title="Please enter a valid dollar amount (e.g., 100.00)"  /> 
-          </div>
-        </td>
-      </tr>
-
-     
-
+  
     </table>
 
     <div class="row g-3 mx-auto">  
-    <?php if ($attr_to_update == null) : ?>
-  
-      <div class="col-4 d-grid ">
-      <input type="submit" value="Add" id="addBtn" name="addBtn" class="btn btn-dark"
-           title="Create new attraction" />                  
-      </div>	    
-      <?php endif ?>
-
-
-      <?php if ($attr_to_update != null) : ?>
       <div class="col-4 d-grid ">
       <input type="submit" value="Confirm update" id="cofmBtn" name="cofmBtn" class="btn btn-primary"
            title="Update attraction" />   
-           <!-- <?php if (isset($_POST['attrId'])) : ?> -->
               <input type="hidden" value="<?php echo $_POST['attrId']; ?>" name="cofm_attraction_id" id="cofm_attraction_id" style="display: none;" />
-            <!-- <?php endif; ?> -->
       </div>	    
-      <?php endif ?>
       <div class="col-4 d-grid">
         <input type="reset" value="Reset Changes" name="resetBtn" id="resetBtn" class="btn btn-secondary" />
       </div>      
@@ -249,6 +133,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
 
 </div>
 
+<?php  endif; ?>
 
     <br/><br/>
 

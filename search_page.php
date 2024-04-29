@@ -13,6 +13,9 @@ require("attraction-finder-db.php");
   // getting list of all attractions and concated locations to display in big table
   $list_of_attractions_with_locations = getAllAttractionsWithLocations();
   $list_of_attraction_types = getAllAttractionTypes();
+  $list_of_cities = getAllCities();
+  $list_of_states = getAllStates();
+
 
 
   if ($_SERVER['REQUEST_METHOD'] == 'POST')
@@ -21,16 +24,46 @@ require("attraction-finder-db.php");
     {
       // each of the POST names come from the name of the input in the form (scroll down and see)
       $list_of_attractions_with_locations = searchAttractionByName($_POST['search_val']);
+      $_POST['typeFilter'] = null;
+      $_POST['cityFilter'] = null;
+      $_POST['stateFilter'] = null;
       // var_dump($list_of_attractions_with_locations);
-    }  
+    } else if (!empty($_POST['addressSearchBtn']))  
+    {
+      // each of the POST names come from the name of the input in the form (scroll down and see)
+      $list_of_attractions_with_locations = searchAttractionByAddress($_POST['address_search_val']);
+      $_POST['typeFilter'] = null;
+      $_POST['cityFilter'] = null;
+      $_POST['stateFilter'] = null;
+      // var_dump($list_of_attractions_with_locations);
+    } 
     else if (!empty($_POST['refreshBtn']))  
     {
       $list_of_attractions_with_locations = getAllAttractionsWithLocations();
       $_POST['typeFilter'] = null;
+      $_POST['cityFilter'] = null;
+      $_POST['stateFilter'] = null;
+
+
     } 
     else if (!empty($_POST['typeFilter']))  
     {
       $list_of_attractions_with_locations = filterAttractionsByType($_POST['typeFilter']);
+      $_POST['cityFilter'] = null;
+      $_POST['stateFilter'] = null;
+
+    } else if (!empty($_POST['cityFilter']))  
+    {
+      $list_of_attractions_with_locations = filterAttractionsByCity($_POST['cityFilter']);
+      $_POST['typeFilter'] = null;
+      $_POST['stateFilter'] = null;
+
+
+    } else if (!empty($_POST['stateFilter']))  
+    {
+      $list_of_attractions_with_locations = filterAttractionsByState($_POST['stateFilter']);
+      $_POST['typeFilter'] = null;
+      $_POST['cityFilter'] = null;
     } 
   }
 ?>
@@ -79,10 +112,7 @@ require("attraction-finder-db.php");
       <input type="submit" value="Search" id="searchBtn" name="searchBtn" class="btn btn-dark"
            title="Submit name search" />                  
       </div>	    
-      <div class="col-4 d-grid ">
-      <input type="submit" value="Refresh List" id="refreshBtn" name="refreshBtn" class="btn btn-outline-dark"
-           title="Return to entire list" />                  
-      </div>	 
+       
       <div class="col-4 d-grid">
         <select id="typeFilter" name="typeFilter" onchange="this.form.submit()">
             <option disabled selected value="">Filter by Attraction Type</option>
@@ -93,6 +123,59 @@ require("attraction-finder-db.php");
             <?php endforeach; ?>
         </select>
     </div>
+    </div>  
+    <div>
+  </div>  
+  </form>
+  </div>
+
+  <div>
+
+    <!-- attraction location search bar -->
+    <form method="post" action="<?php $_SERVER['PHP_SELF'] ?>" onsubmit="return validateInput()">
+    <table style="width:98%">
+      <tr>
+        <td width="50%">
+          <div class='mb-3'>
+            Attraction Address (search by any part of address here or use the filters below!):
+            <input type='text' class='form-control' 
+                   id='address_search_val' name='address_search_val' 
+                   value="" /> 
+          </div>
+        </td>
+      </tr>
+    </table>
+
+    <div class="row g-3 mx-auto">    
+      <div class="col-4 d-grid ">
+      <input type="submit" value="Search" id="addressSearchBtn" name="addressSearchBtn" class="btn btn-dark"
+           title="Submit address search" />                  
+      </div>	    
+      
+      <div class="col-4 d-grid">
+        <select id="cityFilter" name="cityFilter" onchange="this.form.submit()">
+            <option disabled selected value="">Filter by City</option>
+            <?php foreach ($list_of_cities as $city): ?>
+                <option value="<?php echo $city["city"]; ?>" <?php echo isset($_POST['cityFilter']) && $_POST['cityFilter'] == $city["city"] ? 'selected' : ''; ?>>
+                    <?php echo $city["city"]; ?>
+                </option>
+            <?php endforeach; ?>
+         </select>
+        </div>
+        <div class="col-4 d-grid center">
+        <select id="stateFilter" name="stateFilter" onchange="this.form.submit()">
+            <option disabled selected value="">Filter by State</option>
+            <?php foreach ($list_of_states as $state): ?>
+                <option value="<?php echo $state["state"]; ?>" <?php echo isset($_POST['stateFilter']) && $_POST['stateFilter'] == $state["state"] ? 'selected' : ''; ?>>
+                    <?php echo $state["state"]; ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+    </div>
+    <center>
+      <input type="submit" value="Refresh List" id="refreshBtn" name="refreshBtn" class="btn btn-primary"
+           title="Return to entire list" />                  
+            </center>	
     </div>  
     <div>
   </div>  

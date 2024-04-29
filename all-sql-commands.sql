@@ -347,3 +347,4 @@ WHERE pass_id=2;
 UPDATE AF_Password 
 SET pass_hash = "$2y$10$8LmQ8IhPhAgmY2i88U8NVurQK./UcCQun0g.krW/eoIHwcE8jinKS"
 WHERE pass_id=3;
+

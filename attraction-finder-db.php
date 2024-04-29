@@ -33,11 +33,34 @@ function getAllAttractionsWithLocationsByCreator($curruser)
 
 }
 
-// returns search result after user searches by attraction name via search bar (form)
+// returns search result after user searches by attraction address via search bar (form)
+function searchAttractionByAddress($search_value)
+{
+    global $db; 
+    $query = "SELECT attraction_id, attraction_name, CONCAT(street_address, ', ', city,', ', state,' ', zip_code)  FROM AF_Attraction NATURAL JOIN AF_Location WHERE CONCAT(street_address, ', ', city,', ', state,' ', zip_code) LIKE :search_val;";
+    try{
+        $statement = $db->prepare($query);
+        $concatenatedstring = "%" . $search_value . "%";
+        $statement->bindValue(':search_val', $concatenatedstring);
+        $statement->execute(); 
+        $result = $statement->fetchAll(); 
+        $statement->closeCursor();
+        return $result; 
+    } catch (PDOException $e)
+    {
+        $e->getMessage();
+    } catch (Exception $e)
+    {
+        $e->getMessage();
+    }
+
+}
+
+// returns search result after user searches by name via search bar 
 function searchAttractionByName($search_value)
 {
     global $db; 
-    $query = "SELECT attraction_name, CONCAT(street_address, ', ', city,', ', state,' ', zip_code), attraction_type_name FROM AF_Attraction a NATURAL JOIN AF_Location l NATURAL JOIN AF_Attraction_Has_Type ht NATURAL JOIN AF_AttractionType t WHERE a.attraction_id = ht.attraction_id AND ht.attraction_type_id = t.attraction_type_id AND attraction_name LIKE :search_val;";
+    $query = "SELECT attraction_id, attraction_name, CONCAT(street_address, ', ', city,', ', state,' ', zip_code) FROM AF_Attraction NATURAL JOIN AF_Location WHERE attraction_name LIKE :search_val;";
     try{
         $statement = $db->prepare($query);
         $concatenatedstring = "%" . $search_value . "%";
@@ -64,6 +87,48 @@ function filterAttractionsByType($type)
     try{
         $statement = $db->prepare($query);
         $statement->bindValue(':attractionType', $type);
+        $statement->execute(); 
+        $result = $statement->fetchAll(); 
+        $statement->closeCursor();
+        return $result; 
+    } catch (PDOException $e)
+    {
+        $e->getMessage();
+    } catch (Exception $e)
+    {
+        $e->getMessage();
+    }
+}
+
+//returns filtered result based on city via a drop down menu
+function filterAttractionsByCity($city)
+{
+    global $db; 
+    $query = "SELECT attraction_id, attraction_name, CONCAT(street_address, ', ', city,', ', state,' ', zip_code) FROM AF_Attraction NATURAL JOIN AF_Location WHERE city=:city";
+    try{
+        $statement = $db->prepare($query);
+        $statement->bindValue(':city', $city);
+        $statement->execute(); 
+        $result = $statement->fetchAll(); 
+        $statement->closeCursor();
+        return $result; 
+    } catch (PDOException $e)
+    {
+        $e->getMessage();
+    } catch (Exception $e)
+    {
+        $e->getMessage();
+    }
+}
+
+//returns filtered result based on state via a drop down menu
+function filterAttractionsByState($state)
+{
+    global $db; 
+    $query = "SELECT attraction_id, attraction_name, CONCAT(street_address, ', ', city,', ', state,' ', zip_code) FROM AF_Attraction NATURAL JOIN AF_Location WHERE state=:state";
+    try{
+        $statement = $db->prepare($query);
+        $statement->bindValue(':state', $state);
         $statement->execute(); 
         $result = $statement->fetchAll(); 
         $statement->closeCursor();
@@ -208,7 +273,7 @@ function addAttraction($attraction_name, $street_address, $city, $username, $sta
 function getAttractionById($id)  
 {
     global $db;
-    $query = "SELECT * FROM AF_AttractionPhone NATURAL JOIN AF_Attraction NATURAL JOIN AF_Location NATURAL JOIN AF_CustomerPrice NATURAL JOIN AF_Attraction_Has_Type NATURAL JOIN AF_AttractionType WHERE attraction_id=:attraction_id"; // using the prepared statement template name
+    $query = "SELECT * FROM AF_Attraction NATURAL JOIN AF_Location WHERE attraction_id=:attraction_id"; // using the prepared statement template name
     $statement = $db->prepare($query); 
     $statement->bindValue(':attraction_id', $id); 
     $statement->execute(); 
@@ -256,7 +321,7 @@ function getPhoneNumbersforAttraction($id)
 
 // updates location table and attraction table for location/name updates
  
-function updateAttraction($attraction_id, $attraction_name, $street_address, $city, $state, $zip_code, $attr_type, $attr_price)
+function updateAttraction($attraction_id, $attraction_name, $street_address, $city, $state, $zip_code)
 {
     global $db;
 
@@ -491,6 +556,30 @@ function addOrEditRating($attraction_id, $username, $value)
     $statement->closeCursor();
     }
    
+}
+
+// retrieves all cities for city filtering
+function getAllCities()
+{
+    global $db;
+    $query = "SELECT DISTINCT city FROM AF_Location";
+    $statement = $db->prepare($query);
+    $statement->execute(); 
+    $result = $statement->fetchAll(); 
+    $statement->closeCursor();
+    return $result; 
+}
+
+// retrieves all states for state filtering
+function getAllStates()
+{
+    global $db;
+    $query = "SELECT DISTINCT state FROM AF_Location";
+    $statement = $db->prepare($query);
+    $statement->execute(); 
+    $result = $statement->fetchAll(); 
+    $statement->closeCursor();
+    return $result; 
 }
 
 

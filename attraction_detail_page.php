@@ -74,18 +74,18 @@ require("attraction-finder-db.php");
 
       <a href="search_page.php"  class="btn btn-primary active" > Back </a>
       
-      <?php if ($is_favorited == False) : ?>
+      <?php if ($is_favorited == False && $_SESSION['username'] != NULL) : ?>
         <form action="attraction_detail_page.php" method="post">   
           <input type="submit" value="Favorite" name="favBtn" class="btn btn-primary" /> 
-          <input type="hidden" name="attrId" value="<?php echo $_POST['attrId']; ?>" /> 
+          <input type="hidden" name="attrId" value="<?php if (!empty($_POST['attrId'])) { echo $_POST['attrId']; } else {echo $attr_id;} ?>" /> 
         </form>
       <?php endif ?>
 
-      <?php if ($is_favorited) : ?>
+      <?php if ($is_favorited  && $_SESSION['username'] != NULL) : ?>
         <form action="attraction_detail_page.php" method="post">   
           <input type="submit" value="Unfavorite" name="unfavoriteBtn" class="btn btn-danger" /> 
           
-          <input type="hidden" name="attrId" value="<?php echo $_POST['attrId']; ?>" /> 
+          <input type="hidden" name="attrId"value="<?php if (!empty($_POST['attrId'])) { echo $_POST['attrId']; } else {echo $attr_id;} ?>" /> 
         </form>
       <?php endif ?>
 
@@ -95,13 +95,15 @@ require("attraction-finder-db.php");
       <P>
         Number of ratings: <?php echo $avg_rating['num']; ?> 
       </P>
-      <?php if ($user_rating != NULL) { ?>
+      <?php if ( $_SESSION['username'] != NULL ): ?>
+      <?php if ($user_rating != NULL ) { ?>
       <p>
         Your current rating is: <?php echo $user_rating['rating_value']; ?>
       </p>
       <?php } else { ?>
         You have not rated this attraction yet.
       <?php } ?>
+      
 
     <form method="post" action="<?php $_SERVER['PHP_SELF'] ?>" onsubmit="return validateInput()">
       <table style="width:98%">
@@ -129,7 +131,7 @@ require("attraction-finder-db.php");
         </div>	    
       </div>  
     </form>
-
+      <?php  endif; ?>
     </div>  
   </div>
 </div>
