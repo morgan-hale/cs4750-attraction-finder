@@ -125,7 +125,7 @@ require("attraction-finder-db.php");
 
       <div class="row g-3 mx-auto">    
         <div class="col-4 d-grid ">
-          <input type="submit" value="Rating" id="submitRating" name="submitRating" class="btn btn-dark"
+          <input type="submit" value="Submit rating" id="submitRating" name="submitRating" class="btn btn-dark"
            title="Submit new rating" /> 
           <input type="hidden" name="attrId" value="<?php if (!empty($_POST['attrId'])) { echo $_POST['attrId']; } else {echo $attr_id;} ?>" /> 
         </div>	    
