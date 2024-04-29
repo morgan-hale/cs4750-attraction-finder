@@ -41,7 +41,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
   <link rel="stylesheet" href="maintenance-system.css">  
 </head>
 
-<body> 
+
+<div class="container">
 <a href="edit_page.php"  class="btn btn-primary active" > Back to Edit Page </a>
 
 <form method="post" action="<?php $_SERVER['PHP_SELF'] ?>" onsubmit="return validateInput()">
@@ -252,5 +253,5 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
 }
 </style>
 
-</body>
+</div>
 </html>

@@ -71,24 +71,26 @@ require("attraction-finder-db.php");
 <div class="container">
   <div class="row g-3 mt-2">
     <div class="col">
-      <h2>Attraction Details</h2>
-
-      <a href="search_page.php"  class="btn btn-primary active" > Back </a>
-      
+      <a href="search_page.php"  class="btn btn-primary active m-1" > Back </a>
       <?php if ($is_favorited == False && $_SESSION['username'] != NULL) : ?>
         <form action="attraction_detail_page.php" method="post">   
-          <input type="submit" value="Favorite" name="favBtn" class="btn btn-primary" /> 
+          <input type="submit" value="Favorite" name="favBtn" class="btn btn-primary m-1" /> 
           <input type="hidden" name="attrId" value="<?php if (!empty($_POST['attrId'])) { echo $_POST['attrId']; } else {echo $attr_id;} ?>" /> 
         </form>
       <?php endif ?>
 
       <?php if ($is_favorited  && $_SESSION['username'] != NULL) : ?>
         <form action="attraction_detail_page.php" method="post">   
-          <input type="submit" value="Unfavorite" name="unfavoriteBtn" class="btn btn-danger" /> 
+          <input type="submit" value="Unfavorite" name="unfavoriteBtn" class="btn btn-danger m-1" /> 
           
           <input type="hidden" name="attrId"value="<?php if (!empty($_POST['attrId'])) { echo $_POST['attrId']; } else {echo $attr_id;} ?>" /> 
         </form>
       <?php endif ?>
+      
+  </div>
+
+      <h2>Attraction Details</h2>
+
 
       <p>
         Overall rating: <?php echo $avg_rating['rating']; ?> 
@@ -134,7 +136,6 @@ require("attraction-finder-db.php");
     </form>
       <?php  endif; ?>
     </div>  
-  </div>
 </div>
 
 <br/><br/>

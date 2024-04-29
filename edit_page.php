@@ -62,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
   <link rel="stylesheet" href="maintenance-system.css">  
 </head>
 
-<body> 
+<div class = 'container'> 
 <?php  if (!empty($_POST['updateBtn'])) : ?>
 <form method="post" action="<?php $_SERVER['PHP_SELF'] ?>" onsubmit="return validateInput()">
   <!-- form tag specifies where user can interact. when user hits submit, what's in the form will be sent to server. -->
@@ -137,11 +137,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
 
 <?php  endif; ?>
 
-    <br/><br/>
+    <!-- <br/><br/> -->
 
 <hr/>
-<a href="attr_creation_page.php"  class="btn btn-success" > Create New </a>
 <div class="container">
+  
+<a href="attr_creation_page.php"  class="btn btn-success" > Create New </a>
 <h3>My Attractions</h3>
 <div class="row justify-content-center">  
 <table class="w3-table w3-bordered w3-card-4 center" style="width:100%">
@@ -245,5 +246,5 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
 }
 </style>
 
-</body>
+</div>
 </html>
