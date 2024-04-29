@@ -91,12 +91,16 @@ function getAllAttractions()
 }
 
 // attraction insertion function 
-function addAttraction($attraction_name, $street_address, $city, $username, $state, $zip_code, $attraction_type, $attraction_price)
+function addAttraction($attraction_name, $street_address, $city, $username, $state, $zip_code, $attraction_type, $attraction_type2, $phone_label, $phone_number, $phone_label2, $phone_number2, $cust_type, $attraction_price, $cust_type2, $attracion_price2)
 {
     global $db;  
 
      // adding to location table (if needed) before attraction table 
      $type_id = $attraction_type[4];
+     if ($type_id != '') {
+        $type_id2 = $attraction_type2[4] + 1;
+     }
+
     //  var_dump($attraction_price);
 
     //  checking if location already exists 
@@ -127,7 +131,7 @@ function addAttraction($attraction_name, $street_address, $city, $username, $sta
     $userid = $statement->fetch();
     $userid = $userid['user_id'];
 
-    // now insterting into attraction 
+    // now inserting into attraction 
     $query = "INSERT INTO AF_Attraction(attraction_name, street_address, city, creator_id) VALUES (:attraction_name, :street_address, :city, :creator_id)";
     try{
         $statement = $db->prepare($query);
@@ -136,7 +140,6 @@ function addAttraction($attraction_name, $street_address, $city, $username, $sta
         $statement->bindValue(':city', $city);
         $statement->bindValue(':creator_id', $userid);
         $statement->execute(); 
-        $statement->closeCursor(); // release the Cursor you you don't keep using the instance over and over?     
     } catch (PDOException $e)
     {
         $e->getMessage();
@@ -155,11 +158,49 @@ function addAttraction($attraction_name, $street_address, $city, $username, $sta
     $statement->execute();
 
     //insert attraction's price into hasprice; currently this hard codes customer type until we implement something more flexible
-    $query = "INSERT INTO AF_CustomerPrice(attraction_id, customer_type, amount) VALUES (:attraction_id, 'Adult',:attraction_price)";
+    $query = "INSERT INTO AF_CustomerPrice(attraction_id, customer_type, amount) VALUES (:attraction_id, :cust_type,:attraction_price)";
     $statement = $db->prepare($query);
     $statement->bindValue(':attraction_price', $attraction_price);
+    $statement->bindValue(':cust_type', $cust_type);
     $statement->bindValue(':attraction_id', $attraction_id);
     $statement->execute();
+
+    if ($attraction_type2 != '') {
+        $query = "INSERT INTO AF_Attraction_Has_Type(attraction_type_id, attraction_id) VALUES (:type_id, :attraction_id)";
+        $statement = $db->prepare($query);
+        $statement->bindValue(':type_id', $type_id2);
+        $statement->bindValue(':attraction_id', $attraction_id);
+        $statement->execute();    
+    }
+    if ($cust_type2 != '') {
+        $query = "INSERT INTO AF_CustomerPrice(attraction_id, customer_type, amount) VALUES (:attraction_id, :cust_type,:attraction_price)";
+        $statement = $db->prepare($query);
+        $statement->bindValue(':attraction_price', $attraction_price);
+        $statement->bindValue(':cust_type', $cust_type2);
+        $statement->bindValue(':attraction_id', $attraction_id);
+        $statement->execute();
+    }
+
+    if ($phone_label != '') {
+        $query = "INSERT INTO AF_AttractionPhone(phone, label, attraction_id) VALUES (:phone, :label, :attraction_id)";
+        $statement = $db->prepare($query);
+        $statement->bindValue(':phone', $phone_number);
+        $statement->bindValue(':label', $phone_label);
+        $statement->bindValue(':attraction_id', $attraction_id);
+        $statement->execute();    
+    }
+
+    if ($phone_label2 != '') {
+        $query = "INSERT INTO AF_AttractionPhone(phone, label, attraction_id) VALUES (:phone, :label, :attraction_id)";
+        $statement = $db->prepare($query);
+        $statement->bindValue(':phone', $phone_number2);
+        $statement->bindValue(':label', $phone_label2);
+        $statement->bindValue(':attraction_id', $attraction_id);
+        $statement->execute();    
+    }
+
+    $statement->closeCursor(); // release the Cursor you you don't keep using the instance over and over?     
+
 }
 
 
@@ -167,7 +208,7 @@ function addAttraction($attraction_name, $street_address, $city, $username, $sta
 function getAttractionById($id)  
 {
     global $db;
-    $query = "SELECT * FROM AF_Attraction NATURAL JOIN AF_Location NATURAL JOIN AF_CustomerPrice NATURAL JOIN AF_Attraction_Has_Type NATURAL JOIN AF_AttractionType WHERE attraction_id=:attraction_id"; // using the prepared statement template name
+    $query = "SELECT * FROM AF_AttractionPhone NATURAL JOIN AF_Attraction NATURAL JOIN AF_Location NATURAL JOIN AF_CustomerPrice NATURAL JOIN AF_Attraction_Has_Type NATURAL JOIN AF_AttractionType WHERE attraction_id=:attraction_id"; // using the prepared statement template name
     $statement = $db->prepare($query); 
     $statement->bindValue(':attraction_id', $id); 
     $statement->execute(); 
@@ -378,5 +419,79 @@ function isFavorited($attraction_id, $username)
 
     return $result;
 }
+
+// retrieves avg rating for given attraction 
+function getAvgRating($attraction_id)
+{
+    global $db;
+    // retrieving avg rating and number of ratings for the attraction 
+    $query = "SELECT AVG(rating_value) AS rating, COUNT(rating_value) AS num FROM AF_Rating NATURAL JOIN AF_Attraction WHERE attraction_id=:attraction_id";
+    $statement = $db->prepare($query);
+    $statement->bindValue(':attraction_id', $attraction_id);
+    $statement->execute(); 
+    $result = $statement->fetch(); 
+    $statement->closeCursor();
+    return $result; 
+}
+
+// retrieves all ratings given by the user for a given attraction 
+function getRatingForUserForAttraction($attraction_id, $username)
+{
+    global $db;
+    // getting userid for associated username 
+    $query = "SELECT user_id FROM AF_User WHERE username=:username";
+    $statement = $db->prepare($query);
+    $statement->bindValue(':username', $username);
+    $statement->execute();
+    $userid = $statement->fetch();
+    $userid = $userid['user_id'];
+
+    // retrieving all user's ratings for this attraction
+    $query = "SELECT * FROM AF_Rating NATURAL JOIN AF_Attraction WHERE attraction_id=:attraction_id AND user_id=:user_id";
+    $statement = $db->prepare($query);
+    $statement->bindValue(':attraction_id', $attraction_id);
+    $statement->bindValue(':user_id', $userid);
+    $statement->execute(); 
+    $result = $statement->fetch(); 
+    $statement->closeCursor();
+    return $result; 
+}
+
+// create or edit new rating by user for an attraction
+function addOrEditRating($attraction_id, $username, $value)
+{
+    global $db;
+    // getting userid for associated username 
+    $query = "SELECT user_id FROM AF_User WHERE username=:username";
+    $statement = $db->prepare($query);
+    $statement->bindValue(':username', $username);
+    $statement->execute();
+    $userid = $statement->fetch();
+    $userid = $userid['user_id'];
+
+    // if user already has a rating, modify it 
+    if (getRatingForUserForAttraction($attraction_id, $username) != NULL )  {
+        $query = "UPDATE  AF_Rating SET rating_value=:rating_value WHERE user_id=:user_id and attraction_id=:attraction_id;";
+        $statement = $db->prepare($query);
+        $statement->bindValue(':user_id', $userid);
+        $statement->bindValue(':attraction_id', $attraction_id);
+        $statement->bindValue(':rating_value', $value);
+        $statement->execute(); 
+        $statement->closeCursor();
+        
+    } else {
+    // else, insert new rating 
+    // inserting rating
+    $query = "INSERT INTO AF_Rating(user_id, attraction_id, rating_value) VALUES (:user_id, :attraction_id, :rating_value)";
+    $statement = $db->prepare($query);
+    $statement->bindValue(':user_id', $userid);
+    $statement->bindValue(':attraction_id', $attraction_id);
+    $statement->bindValue(':rating_value', $value);
+    $statement->execute(); 
+    $statement->closeCursor();
+    }
+   
+}
+
 
 ?>

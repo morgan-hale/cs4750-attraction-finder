@@ -8,7 +8,7 @@ require("attraction-finder-db.php");
 ?>
 
 <?php 
-  $attr_id = $_GET['id'] OR $_POST['attrId']; // attractionID sent over from search page 
+  $attr_id = $_GET['id']; // attractionID sent over from search page 
   // var_dump($attr_id);
   $attr_id = trim($attr_id); // ID sent over a a string with leading blank space so this trims that off
   // var_dump($attr_id);
@@ -16,6 +16,10 @@ require("attraction-finder-db.php");
   // var_dump($attraction_info);
   $price_info = getPricesforAttraction($attr_id); // price info 
   $phone_info = getPhoneNumbersforAttraction($attr_id); // phone number info
+
+  $avg_rating = getAvgRating($attr_id);
+
+  $user_rating = getRatingForUserForAttraction($attr_id, $_SESSION['username']);
 
   $is_favorited = isFavorited($attr_id, $_SESSION['username']);
 
@@ -35,7 +39,16 @@ require("attraction-finder-db.php");
       $price_info = getPricesforAttraction($_POST['attrId']); // price info 
       $phone_info = getPhoneNumbersforAttraction($_POST['attrId']); // phone number info
       $is_favorited = isFavorited($_POST['attrId'], $_SESSION['username']);
-    }
+    } else if (!empty($_POST['submitRating']))
+    {
+      addOrEditRating($_POST['attrId'], $_SESSION['username'], $_POST['newRating'] );
+      $attraction_info = getAttractionById($_POST['attrId']); // general attraction info 
+      $price_info = getPricesforAttraction($_POST['attrId']); // price info 
+      $phone_info = getPhoneNumbersforAttraction($_POST['attrId']); // phone number info
+      $is_favorited = isFavorited($_POST['attrId'], $_SESSION['username']);
+      $avg_rating = getAvgRating($_POST['attrId']);
+      $user_rating = getRatingForUserForAttraction($attr_id, $_SESSION['username']);
+    } 
   }
 ?>
 
@@ -64,7 +77,7 @@ require("attraction-finder-db.php");
       <?php if ($is_favorited == False) : ?>
         <form action="attraction_detail_page.php" method="post">   
           <input type="submit" value="Favorite" name="favBtn" class="btn btn-primary" /> 
-          <input type="hidden" name="attrId" value="<?php echo $_POST['attrId'] OR $attr_id; ?>" /> 
+          <input type="hidden" name="attrId" value="<?php echo $_POST['attrId']; ?>" /> 
         </form>
       <?php endif ?>
 
@@ -72,9 +85,51 @@ require("attraction-finder-db.php");
         <form action="attraction_detail_page.php" method="post">   
           <input type="submit" value="Unfavorite" name="unfavoriteBtn" class="btn btn-danger" /> 
           
-          <input type="hidden" name="attrId" value="<?php echo $_POST['attrId'] OR $attr_id; ?>" /> 
+          <input type="hidden" name="attrId" value="<?php echo $_POST['attrId']; ?>" /> 
         </form>
       <?php endif ?>
+
+      <p>
+        Overall rating: <?php echo $avg_rating['rating']; ?> 
+      </p>
+      <P>
+        Number of ratings: <?php echo $avg_rating['num']; ?> 
+      </P>
+      <?php if ($user_rating != NULL) { ?>
+      <p>
+        Your current rating is: <?php echo $user_rating['rating_value']; ?>
+      </p>
+      <?php } else { ?>
+        You have not rated this attraction yet.
+      <?php } ?>
+
+    <form method="post" action="<?php $_SERVER['PHP_SELF'] ?>" onsubmit="return validateInput()">
+      <table style="width:98%">
+        <tr>
+          <td width="50%">
+            <div class='mb-3'>
+              Add or edit your rating:
+              <select id="newRating" name="newRating">
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+              </select>
+            </div>
+          </td>
+        </tr>
+      </table>
+
+      <div class="row g-3 mx-auto">    
+        <div class="col-4 d-grid ">
+          <input type="submit" value="Rating" id="submitRating" name="submitRating" class="btn btn-dark"
+           title="Submit new rating" /> 
+          <input type="hidden" name="attrId" value="<?php if (!empty($_POST['attrId'])) { echo $_POST['attrId']; } else {echo $attr_id;} ?>" /> 
+        </div>	    
+      </div>  
+    </form>
+
     </div>  
   </div>
 </div>
