@@ -260,7 +260,6 @@ function updateAttraction($attraction_id, $attraction_name, $street_address, $ci
 }
 
 // deletes attraction with a given id 
-// !! NOTE: no deletion confirmation is implemented yet so be careful
 function deleteAttraction($attraction_id)
 {
     global $db;
@@ -282,4 +281,102 @@ function deleteAttraction($attraction_id)
     $statement->execute(); 
     $statement->closeCursor();
 }
+
+// adds user/attraction into favorite table
+function favoriteAttraction($attraction_id, $username)
+{
+    global $db;
+
+     // getting userid for associated username 
+     $query = "SELECT user_id FROM AF_User WHERE username=:username";
+     $statement = $db->prepare($query);
+     $statement->bindValue(':username', $username);
+     $statement->execute();
+     $userid = $statement->fetch();
+     $userid = $userid['user_id'];
+
+    // inserting into Favorites table 
+    $query = "INSERT INTO AF_Favorite(user_id, attraction_id) VALUES (:user_id, :attraction_id)";
+    $statement = $db->prepare($query);
+    $statement->bindValue(':user_id', $userid);
+    $statement->bindValue(':attraction_id', $attraction_id);
+    $statement->execute(); 
+    $statement->closeCursor();
+}
+
+// retrieves all favorited 
+function getFavorites($username)
+{
+    global $db;
+
+     // getting userid for associated username 
+     $query = "SELECT user_id FROM AF_User WHERE username=:username";
+     $statement = $db->prepare($query);
+     $statement->bindValue(':username', $username);
+     $statement->execute();
+     $userid = $statement->fetch();
+     $userid = $userid['user_id'];
+
+    // retrieving favorites 
+    $query = "SELECT * FROM AF_Location NATURAL JOIN AF_Attraction NATURAL JOIN AF_Favorite WHERE user_id=:user_id";
+    $statement = $db->prepare($query);
+    $statement->bindValue(':user_id', $userid);
+    $statement->execute(); 
+    $result = $statement->fetchAll(); 
+    $statement->closeCursor();
+    return $result; 
+}
+
+// deletes attraction/user from Favorites
+function deleteFavorite($attraction_id, $username)
+{
+    global $db;
+
+    // getting userid for associated username 
+    $query = "SELECT user_id FROM AF_User WHERE username=:username";
+    $statement = $db->prepare($query);
+    $statement->bindValue(':username', $username);
+    $statement->execute();
+    $userid = $statement->fetch();
+    $userid = $userid['user_id'];
+
+    // deleting from favorites
+    $query = "DELETE FROM AF_Favorite WHERE user_id=:user_id AND attraction_id=:attraction_id"; 
+    $statement = $db->prepare($query); 
+    $statement-> bindValue(':user_id', $userid);
+    $statement-> bindValue(':attraction_id', $attraction_id);
+    $statement->execute(); 
+    $statement->closeCursor();
+}
+
+// returns bool value for whether attraction is currently favorited by the user or not
+function isFavorited($attraction_id, $username)
+{
+    global $db;
+
+    // getting userid for associated username 
+    $query = "SELECT user_id FROM AF_User WHERE username=:username";
+    $statement = $db->prepare($query);
+    $statement->bindValue(':username', $username);
+    $statement->execute();
+    $userid = $statement->fetch();
+    $userid = $userid['user_id'];
+
+    // deleting from favorites
+    $query = "SELECT * FROM AF_Favorite WHERE user_id=:user_id AND attraction_id=:attraction_id"; 
+    $statement = $db->prepare($query); 
+    $statement-> bindValue(':user_id', $userid);
+    $statement-> bindValue(':attraction_id', $attraction_id);
+    $statement->execute(); 
+    $result = $statement->fetch();
+    if ($result != NULL) {
+        $result = True;
+    } else {
+        $result = False;
+    }
+    $statement->closeCursor();
+
+    return $result;
+}
+
 ?>

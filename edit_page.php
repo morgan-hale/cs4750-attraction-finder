@@ -160,7 +160,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
            <!-- <?php if (isset($_POST['attrId'])) : ?> -->
               <input type="hidden" value="<?php echo $_POST['attrId']; ?>" name="cofm_attraction_id" id="cofm_attraction_id" style="display: none;" />
             <!-- <?php endif; ?> -->
-           <!-- why do we need to attach this cofm_reqID? because of HTTP stateless property, the current attrId is only available at this request. we need to carry it to the next round of form submission by passing a token to the next request -->
       </div>	    
       <?php endif ?>
       <div class="col-4 d-grid">

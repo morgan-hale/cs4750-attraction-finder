@@ -7,14 +7,36 @@ require("connect-db.php"); // connects to database
 require("attraction-finder-db.php");
 ?>
 
-<?php // form handling
-  $attr_id = $_GET['id']; // attractionID sent over from search page 
+<?php 
+  $attr_id = $_GET['id'] OR $_POST['attrId']; // attractionID sent over from search page 
+  // var_dump($attr_id);
   $attr_id = trim($attr_id); // ID sent over a a string with leading blank space so this trims that off
   // var_dump($attr_id);
   $attraction_info = getAttractionById($attr_id); // general attraction info 
   // var_dump($attraction_info);
   $price_info = getPricesforAttraction($attr_id); // price info 
   $phone_info = getPhoneNumbersforAttraction($attr_id); // phone number info
+
+  $is_favorited = isFavorited($attr_id, $_SESSION['username']);
+
+  if ($_SERVER['REQUEST_METHOD'] == 'POST')
+  {
+    if (!empty($_POST['favBtn']))  
+    {
+      favoriteAttraction($_POST['attrId'], $_SESSION['username'] );
+      $attraction_info = getAttractionById($_POST['attrId']); // general attraction info 
+      $price_info = getPricesforAttraction($_POST['attrId']); // price info 
+      $phone_info = getPhoneNumbersforAttraction($_POST['attrId']); // phone number info
+      $is_favorited = isFavorited($_POST['attrId'], $_SESSION['username']);
+    } else if (!empty($_POST['unfavoriteBtn']))
+    {
+      deleteFavorite($_POST['attrId'], $_SESSION['username']);
+      $attraction_info = getAttractionById($_POST['attrId']); // general attraction info 
+      $price_info = getPricesforAttraction($_POST['attrId']); // price info 
+      $phone_info = getPhoneNumbersforAttraction($_POST['attrId']); // phone number info
+      $is_favorited = isFavorited($_POST['attrId'], $_SESSION['username']);
+    }
+  }
 ?>
 
 <!DOCTYPE html> 
@@ -36,13 +58,27 @@ require("attraction-finder-db.php");
   <div class="row g-3 mt-2">
     <div class="col">
       <h2>Attraction Details</h2>
-      <a href="search_page.php"  class="btn btn-primary active" >
-        Back
-      </a>
+
+      <a href="search_page.php"  class="btn btn-primary active" > Back </a>
+      
+      <?php if ($is_favorited == False) : ?>
+        <form action="attraction_detail_page.php" method="post">   
+          <input type="submit" value="Favorite" name="favBtn" class="btn btn-primary" /> 
+          <input type="hidden" name="attrId" value="<?php echo $_POST['attrId'] OR $attr_id; ?>" /> 
+        </form>
+      <?php endif ?>
+
+      <?php if ($is_favorited) : ?>
+        <form action="attraction_detail_page.php" method="post">   
+          <input type="submit" value="Unfavorite" name="unfavoriteBtn" class="btn btn-danger" /> 
+          
+          <input type="hidden" name="attrId" value="<?php echo $_POST['attrId'] OR $attr_id; ?>" /> 
+        </form>
+      <?php endif ?>
     </div>  
   </div>
-<div>
-  
+</div>
+
 <br/><br/>
 
 <hr/>

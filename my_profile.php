@@ -10,6 +10,9 @@ require("attraction-finder-db.php");
 // getting list of all attractions made by the logged in user
 $list_of_attractions_with_locations = getAllAttractionsWithLocationsByCreator($_SESSION['username']);
 // var_dump($list_of_attractions_with_locations); // printing result to test
+
+$favorite_attractions = getFavorites($_SESSION['username']);
+
 $attr_to_update = null;
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST')
@@ -35,7 +38,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
     // each of the POST names come from the name of the input in the form (scroll down and see)
     updateAttraction($_POST['cofm_attraction_id'], $_POST['attr_name'], $_POST['address'], $_POST['city'], $_POST['state'], $_POST['zip_code']);
     $list_of_attractions_with_locations = getAllAttractionsWithLocationsByCreator($_SESSION['username']); //refreshing again
-  } 
+  } else if (!empty($_POST['unfavoriteBtn']))
+  {
+   deleteFavorite($_POST['attrId'], $_SESSION['username']);
+   $favorite_attractions = getFavorites($_SESSION['username']); // refresh favorites page
+ }
 }
 ?>
 
@@ -55,19 +62,27 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
 </head>
 
 <div class="container">
-<h3>My Attractions</h3>
+<h3>Created Attractions</h3>
 <div class="row justify-content-center">  
 <table class="w3-table w3-bordered w3-card-4 center" style="width:100%">
   <thead>
   <tr style="background-color:#B0B0B0"> 
     <th width="30%"><b>Attraction Name</b></th>        
     <th width="30%"><b>Address</b></th>  
+    <th width="30%"><b>Details</b></th>  
+    <th width="30%"><b>Update</b></th>  
+    <th width="30%"><b>Delete</b></th>  
   </tr>
   </thead>
   <?php foreach ($list_of_attractions_with_locations as $attr_info): ?>
   <tr> 
      <td><?php echo $attr_info['attraction_name']; ?></td>        
      <td><?php echo $attr_info["CONCAT(street_address, ', ', city,', ', state,' ', zip_code)"]; ?></td>            
+     <td>
+     <a href="attraction_detail_page.php?id= <?php echo $attr_info['attraction_id'];?>"  class="btn btn-primary active" >
+        View Details
+      </a>
+     </td>
      <td> 
       <!-- we are creating update and delete buttons for each individual row -->
        <form action="edit_page.php" method="post">   
@@ -117,6 +132,42 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
     </div>
   </div>
 </div>
+
+<br/><br/>
+<div class="container">
+<h3>Favorite Attractions</h3>
+<div class="row justify-content-center">  
+<table class="w3-table w3-bordered w3-card-4 center" style="width:100%">
+  <thead>
+  <tr style="background-color:#B0B0B0"> 
+    <th width="30%"><b>Attraction Name</b></th>   
+    <th width="30%"><b>Details</b></th>        
+    <th width="30%"><b>Delete</b></th>        
+     
+  </tr>
+  </thead>
+  <?php foreach ($favorite_attractions as $attr_info): ?>
+  <tr> 
+     <td><?php echo $attr_info['attraction_name']; ?></td>  
+     <td>
+     <a href="attraction_detail_page.php?id= <?php echo $attr_info['attraction_id'];?>"  class="btn btn-primary active" >
+        View Details
+      </a>
+     </td> 
+     <td>
+     <form action="my_profile.php" method="post">   
+          <input type="submit" value="Unfavorite" name="unfavoriteBtn" class="btn btn-danger" /> 
+          <input type="hidden" name="attrId" value="<?php echo $attr_info['attraction_id']; ?>" /> 
+        </form>
+     </td>     
+          </div>
+        </div>
+      </form>
+     </td>
+   </tr>
+<?php endforeach; ?>  
+</table>
+</div>   
 
 <style>
   /* CSS for modal */
