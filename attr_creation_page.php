@@ -78,18 +78,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
       </tr>
 
       <tr>
-        <td width="50%">
-          <div class='mb-3'>
-            State:
-            <input type='text' class='form-control' 
-                   id='state' name='state' 
-                    required /> 
-          </div>
-        </td>
+      <td width="50%">
+  <div class='mb-3'>
+    State:
+    <input type='text' class='form-control' 
+           id='state' name='state' 
+           pattern="[A-Z]{2}" title="Please enter a valid two-letter, uppercase state abbreviation" 
+           required /> 
+  </div>
+</td>
         <td>
           <div class='mb-3'>
             Zip Code:
-            <input type='text' class='form-control' id='zip_code' name='zip_code' 
+            <input type='text' class='form-control' id='zip_code' name='zip_code' pattern = "[0-9]{5}"
               required /> 
           </div>
         </td>
@@ -135,7 +136,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
           <div class='mb-3'>
           Enter a phone number associated with the label:
             <input type='text' class='form-control' id='phone_number' name='phone_number'
-                   placeholder='Enter a phone number in the pattern 123-456-7890' pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" 
+                   placeholder='Enter a phone number in the pattern 123-456-7890' pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}|^$" 
                    title="Please enter a valid phone number (e.g., xxx-xxx-xxxx)" /> 
           </div>
         </td>
@@ -155,7 +156,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
           Enter a phone number associated with the label:
             <input type='text' class='form-control' id='phone_number2' name='phone_number2'
                    placeholder='Enter a phone number in the pattern 123-456-7890' pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" 
-                   title="Please enter a valid phone number (e.g., xxx-xxx-xxxx)" /> 
+                   title="Please enter a valid phone number (e.g., xxx-xxx-xxxx)"/> 
           </div>
         </td>
       </tr>

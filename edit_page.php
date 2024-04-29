@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
   }  else if (!empty($_POST['cofmBtn']))  
   {
     // each of the POST names come from the name of the input in the form (scroll down and see)
-    updateAttraction($_POST['cofm_attraction_id'], $_POST['attr_name'], $_POST['address'], $_POST['city'], $_POST['state'], $_POST['zip_code'], $_POST['attr_type']);
+    updateAttraction($_POST['cofm_attraction_id'], $_POST['attr_name'], $_POST['address'], $_POST['city'], $_POST['state'], $_POST['zip_code']);
     
 
     //this is a workaround for broken update method; we can go in and fix that if we want but foreign keys w/o cascade are making things annoying
@@ -103,14 +103,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
             State:
             <input type='text' class='form-control' 
                    id='state' name='state' 
-                   value="<?php echo $attr_to_update['state'] ?>" /> 
+                   value="<?php echo $attr_to_update['state'] ?>" pattern="[A-Z]{2}" title="Please enter a valid two-letter, uppercase state abbreviation" 
+           required />  
           </div>
         </td>
         <td>
           <div class='mb-3'>
             Zip Code:
             <input type='text' class='form-control' id='zip_code' name='zip_code' 
-              value="<?php echo $attr_to_update['zip_code'] ?>" /> 
+              value="<?php echo $attr_to_update['zip_code'] ?>" pattern = "[0-9]{5}"
+              required /> 
           </div>
         </td>
       </tr>

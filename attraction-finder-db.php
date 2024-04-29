@@ -382,6 +382,18 @@ function deleteAttraction($attraction_id)
     $statement->execute(); 
     $statement->closeCursor();
 
+    $query = "DELETE FROM AF_Rating WHERE attraction_id=:attraction_id"; 
+    $statement = $db->prepare($query); 
+    $statement-> bindValue(':attraction_id', $attraction_id);
+    $statement->execute(); 
+    $statement->closeCursor();
+
+    $query = "DELETE FROM AF_Favorite WHERE attraction_id=:attraction_id"; 
+    $statement = $db->prepare($query); 
+    $statement-> bindValue(':attraction_id', $attraction_id);
+    $statement->execute(); 
+    $statement->closeCursor();
+
     $query = "DELETE FROM AF_Attraction WHERE attraction_id=:attraction_id"; 
     $statement = $db->prepare($query); 
     $statement-> bindValue(':attraction_id', $attraction_id);

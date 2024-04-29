@@ -8,6 +8,7 @@ require("attraction-finder-db.php");
 ?>
 
 <?php 
+
   $attr_id = $_GET['id']; // attractionID sent over from search page 
   // var_dump($attr_id);
   $attr_id = trim($attr_id); // ID sent over a a string with leading blank space so this trims that off
